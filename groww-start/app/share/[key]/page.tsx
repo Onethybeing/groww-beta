@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { ShareActions } from "@/components/share/share-actions";
 import { cardLines, parseShareParams } from "@/lib/share";
@@ -36,6 +37,7 @@ export default async function SharePage(props: Props) {
       </main>
       <footer className="px-5 pb-[22px] pt-3">
         <ShareActions imgUrl={imgUrl} text={`${lines.headline}! Building my investing habit on GROW Beta.`} />
+        <Link href="/refer" className="mt-3 block text-center text-sm font-semibold text-groww">Invite friends · you both get a streak freeze</Link>
       </footer>
     </div>
   );

@@ -2,9 +2,8 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { X } from "lucide-react";
-import { useApp, useToday } from "@/lib/store";
+import { streakFor, useApp, useToday } from "@/lib/store";
 import { MILESTONES, type MilestoneKey } from "@/lib/engine/milestones";
-import { computeStreak } from "@/lib/engine/streak";
 import { personaFor } from "@/lib/engine/persona";
 import { shareHref } from "@/lib/share";
 import { MilestoneIcon } from "./milestone-icon";
@@ -12,10 +11,12 @@ import { MilestoneIcon } from "./milestone-icon";
 export function useShareHref(key: MilestoneKey): string {
   const today = useToday();
   const instalments = useApp((s) => s.instalments);
+  const referrals = useApp((s) => s.referrals);
+  const referredBy = useApp((s) => s.referredBy);
   const lessons = useApp((s) => Object.keys(s.lessons).length);
   const answers = useApp((s) => s.answers);
   return shareHref(key, {
-    streak: computeStreak(instalments.map((i) => i.date), today).current,
+    streak: streakFor({ instalments, referrals, referredBy }, today).current,
     lessons,
     persona: answers ? personaFor(answers).id : undefined,
   });

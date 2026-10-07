@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("Groww flow with beginner features: hints → explainer → practice buy → SIP → habit → share", async ({ page }) => {
+test("Groww flow with beginner features: hints → explainer → practice buy → SIP → habit → share", async ({ page, browser, baseURL }) => {
   // New user: optional hints prompt on Home
   await page.goto("/");
   await expect(page.getByTestId("welcome-sheet")).toBeVisible();
@@ -68,4 +68,24 @@ test("Groww flow with beginner features: hints → explainer → practice buy �
   const card = page.getByTestId("share-card");
   await expect(card).toBeVisible();
   await expect.poll(() => card.evaluate((img: HTMLImageElement) => img.naturalWidth), { timeout: 20_000 }).toBe(1080);
+
+  // Referrals (post-MVP): invite code, friend joins → streak freeze; accept someone else's invite
+  await page.getByRole("link", { name: /invite friends/i }).click();
+  await expect(page.getByTestId("my-code")).toHaveText(/^GROW-[A-Z2-9]{4}$/);
+  await expect(page.getByTestId("freeze-total")).toHaveText("1 streak freeze");
+  await page.goto("/refer?demo=1");
+  await page.getByRole("button", { name: /friend joined/i }).click();
+  await page.getByRole("button", { name: /close demo controls/i }).click();
+  await expect(page.getByTestId("friend-row")).toHaveCount(1);
+  await expect(page.getByTestId("freeze-total")).toHaveText("2 streak freezes");
+  // Existing investors can't claim invites; a brand-new user can
+  await page.goto("/r/GROW-AB2C");
+  await page.getByTestId("accept-invite").click();
+  await expect(page.getByText("Invites are for new investors only")).toBeVisible();
+  const fresh = await browser.newContext({ baseURL, viewport: { width: 390, height: 844 } });
+  const newbie = await fresh.newPage();
+  await newbie.goto("/r/GROW-AB2C");
+  await newbie.getByTestId("accept-invite").click();
+  await expect(newbie.getByText("Invite accepted")).toBeVisible();
+  await fresh.close();
 });
