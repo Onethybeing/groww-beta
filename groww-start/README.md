@@ -13,7 +13,7 @@ beginner journey inside a Groww-like shell.
 ```bash
 npm install
 npm run dev        # http://localhost:3000 (use a phone-size viewport, ~390px)
-npm test           # 75 unit tests: engine, store, market, content, routes
+npm test           # 84 unit tests: engine, store, market, content, routes
 npm run e2e        # Playwright happy path on a production build (port 3100)
 npm run snapshot   # refresh data/snapshot from Yahoo Finance + mfapi.in
 ```
