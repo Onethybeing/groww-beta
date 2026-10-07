@@ -68,4 +68,15 @@ test("Groww flow with beginner features: hints → explainer → practice buy �
   const card = page.getByTestId("share-card");
   await expect(card).toBeVisible();
   await expect.poll(() => card.evaluate((img: HTMLImageElement) => img.naturalWidth), { timeout: 20_000 }).toBe(1080);
+
+  // Referrals (post-MVP): invite code, friend joins → streak freeze; accept someone else's invite
+  await page.getByRole("link", { name: /invite friends/i }).click();
+  await expect(page.getByTestId("my-code")).toHaveText(/^GROW-[A-Z2-9]{4}$/);
+  await expect(page.getByTestId("freeze-total")).toHaveText("1 streak freeze");
+  await page.getByRole("button", { name: /simulate a friend joining/i }).click();
+  await expect(page.getByTestId("friend-row")).toHaveCount(1);
+  await expect(page.getByTestId("freeze-total")).toHaveText("2 streak freezes");
+  await page.goto("/r/GROW-AB2C");
+  await page.getByTestId("accept-invite").click();
+  await expect(page.getByText("Invite accepted")).toBeVisible();
 });

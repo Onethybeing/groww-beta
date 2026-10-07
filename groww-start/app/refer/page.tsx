@@ -1,0 +1,80 @@
+"use client";
+import { useState } from "react";
+import { Check, Copy, Gift, Share2, Snowflake, UserPlus } from "lucide-react";
+import { PageHeader } from "@/components/page-header";
+import { totalFreezesOf, useApp } from "@/lib/store";
+import { MAX_REFERRAL_FREEZES } from "@/lib/engine/referrals";
+import { formatDate } from "@/lib/format";
+
+export default function ReferPage() {
+  const code = useApp((s) => s.myCode());
+  const referrals = useApp((s) => s.referrals);
+  const freezes = useApp(totalFreezesOf);
+  const simulate = useApp((s) => s.simulateFriendJoined);
+  const [copied, setCopied] = useState(false);
+  const link = typeof window === "undefined" ? `/r/${code}` : `${window.location.origin}/r/${code}`;
+  const capped = referrals.length >= MAX_REFERRAL_FREEZES;
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+  const share = async () => {
+    const text = `I'm building an investing habit on GROW Beta (a concept demo). Join with my invite and we both get a streak freeze: ${link}`;
+    if (navigator.share) await navigator.share({ text, url: link }).catch(() => {});
+    else await copy();
+  };
+
+  return (
+    <>
+      <PageHeader title="Invite friends" back="/holdings" />
+      <div className="flex flex-col gap-4 px-5 py-4">
+        <section className="flex flex-col items-center gap-2 rounded-[20px] bg-groww px-5 py-6 text-center text-white">
+          <Gift className="size-9" aria-hidden />
+          <h2 className="text-xl font-bold">Invite a friend, both get a streak freeze</h2>
+          <p className="text-sm text-[#E3F7EF]">A freeze keeps your SIP streak alive if you skip a month. Rewards are never cash.</p>
+          <span data-testid="my-code" className="mt-2 rounded-xl bg-white px-4 py-2 font-mono text-2xl font-bold tracking-[0.12em] text-groww">{code}</span>
+        </section>
+
+        <div className="flex items-center gap-2 rounded-[14px] border border-line px-3 py-2.5">
+          <span className="flex-1 truncate text-sm text-muted-ink">{link}</span>
+          <button type="button" onClick={copy} className="flex h-9 items-center gap-1 rounded-lg bg-mint px-3 text-sm font-semibold text-groww">
+            {copied ? <Check className="size-4" aria-hidden /> : <Copy className="size-4" aria-hidden />}{copied ? "Copied" : "Copy"}
+          </button>
+        </div>
+        <button type="button" onClick={share} className="flex h-[52px] items-center justify-center gap-2 rounded-[14px] bg-groww text-base font-bold text-white">
+          <Share2 className="size-[18px]" aria-hidden />Share invite
+        </button>
+
+        <section className="flex items-center gap-3 rounded-2xl bg-[#EEF5FF] p-4">
+          <Snowflake className="size-7 text-[#2457C5]" aria-hidden />
+          <div className="flex flex-col">
+            <b data-testid="freeze-total" className="text-base">{freezes} streak freeze{freezes === 1 ? "" : "s"}</b>
+            <span className="text-xs text-[#3D4050]">1 for everyone + 1 per friend who joins (up to {MAX_REFERRAL_FREEZES} from invites)</span>
+          </div>
+        </section>
+
+        <section className="flex flex-col">
+          <h2 className="mb-1 text-[15px] font-bold">Friends who joined ({referrals.length})</h2>
+          {referrals.length === 0 && <p className="py-1 text-sm text-muted-ink">No one yet. Share your link to get started.</p>}
+          {referrals.map((r) => (
+            <div key={r.name} data-testid="friend-row" className="flex min-h-12 items-center justify-between border-b border-[#F1F2F4] text-sm">
+              <span className="flex items-center gap-2"><UserPlus className="size-4 text-groww" aria-hidden />{r.name}</span>
+              <span className="text-muted-ink">{formatDate(r.joinedAt)} · +1 freeze</span>
+            </div>
+          ))}
+          {capped && <p className="mt-2 text-xs text-muted-ink">You&apos;ve reached the invite reward limit. Thanks for spreading the habit!</p>}
+        </section>
+
+        <button type="button" onClick={simulate} className="h-11 rounded-[14px] border border-dashed border-line text-sm font-semibold text-muted-ink">
+          Simulate a friend joining (demo)
+        </button>
+      </div>
+    </>
+  );
+}
