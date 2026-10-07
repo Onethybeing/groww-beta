@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Lock } from "lucide-react";
 import { TimeMachine } from "@/components/practice/time-machine";
+import { MockPortfolio } from "@/components/practice/mock-portfolio";
 import { useApp } from "@/lib/store";
 import { FIRST_LESSON_ID, journeyStatus } from "@/lib/journey";
 
@@ -40,7 +41,7 @@ export default function PracticePage() {
         </div>
       </header>
       <div className="px-5 py-3.5">
-        {tab === "time-machine" ? <TimeMachine /> : <p className="text-sm text-muted-ink">Coming in the next task.</p>}
+        {tab === "time-machine" ? <TimeMachine /> : <MockPortfolio />}
         <p className="mt-4 text-center text-xs text-muted-ink">Virtual money · Prices delayed · Not a prediction</p>
       </div>
     </>
