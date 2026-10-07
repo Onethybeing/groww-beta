@@ -4,6 +4,7 @@ test("Groww flow with beginner features: hints → explainer → practice buy �
   // New user: optional hints prompt on Home
   await page.goto("/");
   await expect(page.getByTestId("welcome-sheet")).toBeVisible();
+  await page.getByRole("button", { name: "Long-term wealth" }).click();
   await page.getByRole("button", { name: "Never" }).click();
   await page.getByRole("button", { name: "₹500–2k" }).click();
   await page.getByRole("button", { name: "3+ years" }).click();
@@ -30,6 +31,7 @@ test("Groww flow with beginner features: hints → explainer → practice buy �
   // Practice tab shows the virtual holding
   await page.getByTestId("practice-done").click();
   await expect(page.getByTestId("holding-RELIANCE.NS")).toBeVisible();
+  await expect(page.getByTestId("go-real")).toBeVisible();
 
   // SIP order with Start small quick-picks
   await page.goto("/funds/MF120716/sip");

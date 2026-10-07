@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
 import { useMemo } from "react";
-import { Check, ChevronRight, Clock } from "lucide-react";
+import { Check, ChevronRight, Clock, Sprout } from "lucide-react";
 import { instrumentHref } from "@/components/instrument-row";
 import { useApp } from "@/lib/store";
 import { useQuotes } from "@/lib/market/client";
-import { getInstrument } from "@/lib/market/instruments";
+import { getInstrument, fundForCategory } from "@/lib/market/instruments";
 import { holdings } from "@/lib/engine/portfolio";
 import { LESSONS } from "@/lib/content";
 import { formatINR, formatPct } from "@/lib/format";
@@ -14,6 +14,9 @@ export default function PracticePage() {
   const cash = useApp((s) => s.cash);
   const txns = useApp((s) => s.transactions);
   const lessons = useApp((s) => s.lessons);
+  const practised = useApp((s) => s.transactions.length > 0 || s.timeMachineRuns > 0);
+  const hasSip = useApp((s) => s.sipPlan !== null);
+  const starterFund = fundForCategory("index");
   const held = useMemo(() => [...new Set(txns.map((t) => t.symbol))], [txns]);
   const { data: quotes } = useQuotes(held);
   const prices = useMemo(() => Object.fromEntries((quotes ?? []).map((q) => [q.symbol, q.price])), [quotes]);
@@ -53,6 +56,18 @@ export default function PracticePage() {
           })}
           <Link href="/stocks" className="flex min-h-11 items-center text-sm font-bold text-groww">+ Practise with any stock or fund</Link>
         </section>
+
+        {practised && !hasSip && (
+          <Link href={`/funds/${starterFund.symbol}/sip`} data-testid="go-real"
+            className="flex items-center gap-3 rounded-2xl bg-groww p-4 text-white">
+            <Sprout className="size-7 flex-none" aria-hidden />
+            <span className="flex flex-1 flex-col gap-0.5">
+              <b className="text-[15px]">Ready to go real?</b>
+              <span className="text-[13px] text-[#E3F7EF]">You&apos;ve practised. Start a SIP from just ₹100 a month in a {starterFund.short} fund.</span>
+            </span>
+            <ChevronRight className="size-5" aria-hidden />
+          </Link>
+        )}
 
         <Link href="/practice/time-machine" className="flex items-center gap-3 rounded-2xl border border-line p-3.5">
           <span className="flex size-11 flex-none items-center justify-center rounded-xl bg-mint text-groww"><Clock className="size-[22px]" aria-hidden /></span>
