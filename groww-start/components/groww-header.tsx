@@ -1,10 +1,16 @@
 "use client";
 import Link from "next/link";
 import { useRef } from "react";
+import { Search } from "lucide-react";
 import { useUi } from "@/lib/store/ui";
+import { useToday, useApp } from "@/lib/store";
+import { formatDate } from "@/lib/format";
 
-export function GrowwHeader() {
+/** Groww top bar with the Explore / Holdings switch. Tapping the wordmark 5× opens demo controls. */
+export function GrowwHeader({ active }: { active: "explore" | "holdings" }) {
   const setDemoOpen = useUi((s) => s.setDemoOpen);
+  const offset = useApp((s) => s.clockOffsetDays);
+  const today = useToday();
   const taps = useRef<number[]>([]);
   const onLogoTap = () => {
     const now = Date.now();
@@ -14,13 +20,28 @@ export function GrowwHeader() {
       setDemoOpen(true);
     }
   };
+  const tab = (key: "explore" | "holdings", label: string, href: string) =>
+    active === key ? (
+      <span className="border-b-[2.5px] border-groww py-2.5 text-[15px] font-bold">{label}</span>
+    ) : (
+      <Link href={href} className="py-2.5 text-[15px] font-medium text-muted-ink">{label}</Link>
+    );
   return (
-    <header className="flex items-center justify-between border-b border-line px-5 py-3.5">
-      <div className="flex items-center gap-2">
-        <button onClick={onLogoTap} className="text-[22px] font-bold tracking-tight text-groww" aria-label="Groww">Groww</button>
-        <span className="rounded-full bg-[#F1F2F4] px-2 py-[3px] text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-ink">Concept demo</span>
+    <>
+      <header className="flex items-center justify-between px-5 pb-2.5 pt-3.5">
+        <div className="flex items-center gap-2">
+          <button onClick={onLogoTap} className="text-[22px] font-bold tracking-tight text-groww" aria-label="Groww">Groww</button>
+          <span className="rounded-full bg-[#F1F2F4] px-2 py-[3px] text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-ink">Concept</span>
+        </div>
+        <div className="flex items-center gap-1">
+          {offset > 0 && <span className="text-xs text-muted-ink">Demo date: {formatDate(today)}</span>}
+          <Link href="/stocks" aria-label="Search" className="flex size-11 items-center justify-center"><Search className="size-[22px]" aria-hidden /></Link>
+        </div>
+      </header>
+      <div className="flex gap-[18px] border-b border-line px-5">
+        {tab("explore", "Explore", "/")}
+        {tab("holdings", "Holdings", "/holdings")}
       </div>
-      <Link href="/journey" className="text-sm font-semibold text-groww">My journey</Link>
-    </header>
+    </>
   );
 }

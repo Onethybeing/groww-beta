@@ -23,10 +23,10 @@ function takeaway(r: SipReplayResult): string {
   return `${now}${dip}${peak} Short-term swings like this are normal. Time in the market is what counts.`;
 }
 
-export function TimeMachine() {
+export function TimeMachine({ initialSymbol = "MF120716" }: { initialSymbol?: string }) {
   const runs = useApp((s) => s.timeMachineRuns);
   const recordRun = useApp((s) => s.recordTimeMachineRun);
-  const [symbol, setSymbol] = useState("MF120716");
+  const [symbol, setSymbol] = useState(initialSymbol);
   const [amount, setAmount] = useState(500);
   const [years, setYears] = useState(3);
   const [run, setRun] = useState<{ symbol: string; amount: number; years: number } | null>(null);

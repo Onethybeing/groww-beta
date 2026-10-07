@@ -88,6 +88,28 @@ describe("store", () => {
     expect(s().answers).toBeNull();
   });
 
+  it("welcome prompt: answers turn hints on and derive a full profile", () => {
+    expect(s().hintsOn).toBe(true);
+    expect(s().welcomeSeen).toBe(false);
+    s().setWelcome({ experience: "never", budget: "500-2k", horizon: "3plus" });
+    expect(s().welcomeSeen).toBe(true);
+    expect(s().hintsOn).toBe(true);
+    expect(s().answers).toEqual({ goal: "wealth", experience: "never", budget: "500-2k", reaction: "wait", horizon: "3plus" });
+    expect(s().goal).toEqual({ name: "Long-term wealth", target: 100000 });
+  });
+
+  it("welcome prompt: a short horizon maps to a trip goal", () => {
+    s().setWelcome({ experience: "fd", budget: "100-500", horizon: "lt1" });
+    expect(s().answers?.goal).toBe("trip");
+  });
+
+  it("welcome prompt: skipping turns hints off", () => {
+    s().setWelcome(null);
+    expect(s().welcomeSeen).toBe(true);
+    expect(s().hintsOn).toBe(false);
+    expect(s().answers).toBeNull();
+  });
+
   it("survives corrupted JSON in storage", async () => {
     localStorage.setItem(mod.STORE_KEY, "{not json");
     await mod.useApp.persist.rehydrate();

@@ -1,52 +1,48 @@
 import { test, expect } from "@playwright/test";
 
-test("Learn → Practice → Invest → Build → Share", async ({ page }) => {
+test("Groww flow with beginner features: hints → explainer → practice buy → SIP → habit → share", async ({ page }) => {
+  // New user: optional hints prompt on Home
   await page.goto("/");
-  await page.getByRole("link", { name: /start here/i }).click();
+  await expect(page.getByTestId("welcome-sheet")).toBeVisible();
+  await page.getByRole("button", { name: "Never" }).click();
+  await page.getByRole("button", { name: "₹500–2k" }).click();
+  await page.getByRole("button", { name: "3+ years" }).click();
+  await page.getByRole("button", { name: "Turn on hints" }).click();
+  await expect(page.getByTestId("practice-banner")).toBeVisible();
 
-  // Onboarding
-  await page.getByRole("button", { name: /long-term wealth/i }).click();
-  await page.getByRole("button", { name: "FD or RD" }).click();
-  await page.getByRole("button", { name: /₹500 – ₹2,000/ }).click();
-  await page.getByRole("button", { name: /wait it out/i }).click();
-  await page.getByRole("button", { name: /3\+ years/i }).click();
-  await page.getByRole("button", { name: /save my goal/i }).click();
-  await expect(page.getByTestId("persona-title")).toHaveText("Steady Starter");
+  // Fund page: explainer + what-if SIP card
+  await page.getByRole("link", { name: "Start with ₹100" }).click();
+  await expect(page.getByTestId("nav")).toBeVisible({ timeout: 20_000 });
+  await page.getByRole("button", { name: /NAV ·/ }).click();
+  await expect(page.getByText("For you, right now")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByTestId("what-if")).toBeVisible();
 
-  // Learn
-  await page.getByRole("link", { name: /start lesson 1/i }).click();
-  for (let i = 0; i < 4; i++) await page.getByRole("button", { name: "Next", exact: true }).click();
-  await page.getByRole("button", { name: "4 units" }).click();
-  await page.getByRole("button", { name: /finish lesson/i }).click();
-  await expect(page.getByText(/practice unlocked/i)).toBeVisible();
-
-  // Practice: Time Machine
-  await page.getByRole("link", { name: /go to practice/i }).click();
-  await page.getByRole("button", { name: "Replay" }).click();
-  await expect(page.getByTestId("tm-result")).toBeVisible({ timeout: 20_000 });
+  // Stock page: practice buy next to Buy
+  await page.goto("/stocks/RELIANCE.NS");
+  await expect(page.getByTestId("price")).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByTestId("beginner-tip")).toBeVisible();
+  await page.getByRole("button", { name: /practice buy/i }).click();
+  await page.getByRole("button", { name: "Confirm practice buy" }).click();
+  await expect(page.getByTestId("practice-done")).toBeVisible();
   await page.getByRole("button", { name: "Skip" }).click();
 
-  // Practice: Mock buy
-  await page.getByRole("tab", { name: /mock portfolio/i }).click();
-  await page.getByTestId("instrument-RELIANCE.NS").click({ timeout: 20_000 });
-  await page.getByRole("button", { name: "Confirm buy" }).click();
+  // Practice tab shows the virtual holding
+  await page.getByTestId("practice-done").click();
   await expect(page.getByTestId("holding-RELIANCE.NS")).toBeVisible();
 
-  // Invest
-  await page.goto("/invest");
-  await page.getByRole("radio", { name: /₹250/ }).click();
-  for (let i = 0; i < 2; i++) await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("button", { name: /confirm with upi/i }).click();
-  await expect(page.getByText("First investment done")).toBeVisible();
+  // SIP order with Start small quick-picks
+  await page.goto("/funds/MF120716/sip");
+  await page.getByRole("button", { name: /₹250/ }).click();
+  await expect(page.getByTestId("sip-amount")).toHaveValue("250");
+  await page.getByRole("button", { name: /start sip/i }).click();
+  await expect(page.getByText("SIP started")).toBeVisible();
 
-  // Build: demo time travel
-  await page.goto("/progress?demo=1");
+  // Holdings: habit card, demo time travel → 3-month streak → share
+  await page.goto("/holdings?demo=1");
   await page.getByRole("button", { name: "+1 month", exact: true }).click();
   await page.getByRole("button", { name: "+1 month", exact: true }).click();
   await expect(page.getByTestId("streak-count")).toHaveText("3");
-  await expect(page.getByTestId("milestone-streak_3")).toHaveAttribute("data-achieved", "true");
-
-  // Share
   await page.getByRole("button", { name: /close demo controls/i }).click();
   await page.getByTestId("milestone-streak_3").click();
   const card = page.getByTestId("share-card");

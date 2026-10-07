@@ -19,7 +19,7 @@ export const LessonSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/), order: z.number().int(), title: z.string(), minutes: z.number(),
   cards: z.array(CardSchema).min(3),
 });
-export const GlossarySchema = z.record(z.string(), z.object({ term: z.string(), short: z.string(), example: z.string().optional() }));
+export const GlossarySchema = z.record(z.string(), z.object({ term: z.string(), short: z.string(), lesson: z.string().optional() }));
 
 export type Card = z.infer<typeof CardSchema>;
 export type Lesson = z.infer<typeof LessonSchema>;

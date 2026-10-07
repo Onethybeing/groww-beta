@@ -52,10 +52,11 @@ export function TradeSheet({ instrument, price, priceDate, open, onOpenChange, o
       <SheetContent side="bottom" className="mx-auto max-w-[430px] gap-3.5 rounded-t-3xl px-[22px] pb-[26px] pt-5">
         {instrument && (
           <>
+            <span className="self-start rounded-full bg-[#FFF4E0] px-2.5 py-1 text-xs font-bold text-[#8A4B00]">Practice · virtual money</span>
             <div className="flex flex-col gap-0.5">
-              <SheetTitle className="text-xl font-bold text-ink">{instrument.name}</SheetTitle>
+              <SheetTitle className="text-xl font-bold text-ink">Practice {side} · {instrument.short}</SheetTitle>
               <SheetDescription className="text-sm text-muted-ink">
-                {isFund ? "NAV" : "Last close"} {formatINR(price, 2)}{priceDate ? ` · ${formatDate(priceDate)}` : ""} · virtual money
+                Fills at {isFund ? "NAV" : "last close"} {formatINR(price, 2)}{priceDate ? ` · ${formatDate(priceDate)}` : ""}
               </SheetDescription>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -77,7 +78,8 @@ export function TradeSheet({ instrument, price, priceDate, open, onOpenChange, o
             {held > 0 && <p className="text-xs text-muted-ink">You hold {held} {isFund ? "units" : held === 1 ? "share" : "shares"}</p>}
             {error && <p role="alert" className="text-sm font-semibold text-loss">{error}</p>}
             <button type="button" onClick={submit}
-              className={`flex h-[52px] items-center justify-center rounded-[14px] text-base font-bold text-white ${side === "sell" ? "bg-loss" : "bg-groww"}`}>Confirm {side}</button>
+              className="flex h-[52px] items-center justify-center rounded-[14px] bg-ink text-base font-bold text-white">Confirm practice {side}</button>
+            <span className="text-center text-xs text-muted-ink">Nothing real is bought or sold. Track it in the Practice tab.</span>
           </>
         )}
       </SheetContent>

@@ -1,48 +1,79 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
-import { Lock } from "lucide-react";
-import { TimeMachine } from "@/components/practice/time-machine";
-import { MockPortfolio } from "@/components/practice/mock-portfolio";
+import { useMemo } from "react";
+import { Check, ChevronRight, Clock } from "lucide-react";
+import { instrumentHref } from "@/components/instrument-row";
 import { useApp } from "@/lib/store";
-import { FIRST_LESSON_ID, journeyStatus } from "@/lib/journey";
-
-const TABS = [
-  { id: "time-machine", label: "Time Machine" },
-  { id: "mock", label: "Mock portfolio" },
-] as const;
+import { useQuotes } from "@/lib/market/client";
+import { getInstrument } from "@/lib/market/instruments";
+import { holdings } from "@/lib/engine/portfolio";
+import { LESSONS } from "@/lib/content";
+import { formatINR, formatPct } from "@/lib/format";
 
 export default function PracticePage() {
-  const state = useApp();
-  const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("time-machine");
-
-  if (!journeyStatus(state).practiceUnlocked) {
-    return (
-      <div className="flex flex-col items-center gap-3 px-6 py-16 text-center">
-        <span className="flex size-14 items-center justify-center rounded-2xl bg-surface text-muted-ink"><Lock className="size-6" aria-hidden /></span>
-        <p className="text-lg font-bold">Finish lesson 1 to unlock Practice</p>
-        <Link href={`/learn/${FIRST_LESSON_ID}`} className="font-semibold text-groww underline">Start the 2-minute lesson</Link>
-      </div>
-    );
-  }
+  const cash = useApp((s) => s.cash);
+  const txns = useApp((s) => s.transactions);
+  const lessons = useApp((s) => s.lessons);
+  const held = useMemo(() => [...new Set(txns.map((t) => t.symbol))], [txns]);
+  const { data: quotes } = useQuotes(held);
+  const prices = useMemo(() => Object.fromEntries((quotes ?? []).map((q) => [q.symbol, q.price])), [quotes]);
+  const hs = holdings(txns, prices);
+  const value = hs.reduce((a, h) => a + h.value, 0);
+  const invested = hs.reduce((a, h) => a + h.invested, 0);
+  const pnl = value - invested;
 
   return (
     <>
-      <header className="flex flex-col gap-2.5 border-b border-line px-5 pb-2.5 pt-3.5">
-        <div className="flex items-center justify-between">
-          <h1 className="text-[22px] font-bold">Practice</h1>
-          <span className="rounded-full bg-[#FFF4E0] px-2.5 py-[5px] text-xs font-semibold text-[#8A4B00]">Virtual money · Prices delayed</span>
-        </div>
-        <div role="tablist" aria-label="Practice modes" className="grid grid-cols-2 gap-1 rounded-xl bg-[#F1F2F4] p-1">
-          {TABS.map((t) => (
-            <button key={t.id} role="tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}
-              className={`h-10 rounded-[9px] text-sm ${tab === t.id ? "bg-white font-bold text-ink shadow-[0_1px_3px_rgba(27,29,41,0.1)]" : "font-semibold text-muted-ink"}`}>{t.label}</button>
-          ))}
-        </div>
+      <header className="flex items-center justify-between px-5 pb-2.5 pt-4">
+        <h1 className="text-[22px] font-bold">Practice</h1>
+        <span className="rounded-full bg-[#FFF4E0] px-2.5 py-[5px] text-xs font-semibold text-[#8A4B00]">Virtual money · Prices delayed</span>
       </header>
-      <div className="px-5 py-3.5">
-        {tab === "time-machine" ? <TimeMachine /> : <MockPortfolio />}
-        <p className="mt-4 text-center text-xs text-muted-ink">Virtual money · Prices delayed · Not a prediction</p>
+      <div className="flex flex-col gap-4 px-5 pb-4 pt-1">
+        <section className="flex flex-col gap-3 rounded-[18px] bg-ink p-4 text-white">
+          <span className="text-[13px] text-[#B9BBC6]">Virtual portfolio</span>
+          <b data-testid="virtual-total" className="text-[28px]">{formatINR(cash + value, 2)}</b>
+          <div className="grid grid-cols-3 gap-2.5 text-[13px]">
+            <div className="flex flex-col gap-0.5"><span className="text-[#B9BBC6]">Cash</span><b data-testid="cash">{formatINR(cash, 2)}</b></div>
+            <div className="flex flex-col gap-0.5"><span className="text-[#B9BBC6]">Invested</span><b>{formatINR(invested, 2)}</b></div>
+            <div className="flex flex-col gap-0.5"><span className="text-[#B9BBC6]">P&amp;L</span><b className={pnl >= 0 ? "text-[#7BE0BC]" : "text-[#FF9C8A]"}>{pnl >= 0 ? "+" : "−"}{formatINR(Math.abs(pnl), 2)}</b></div>
+          </div>
+        </section>
+
+        <section className="flex flex-col">
+          <h2 className="mb-1 text-[15px] font-bold">Your practice holdings</h2>
+          {hs.length === 0 && <p className="py-2 text-sm text-muted-ink">Nothing yet. Open any stock or fund and tap Practice buy.</p>}
+          {hs.map((h) => {
+            const i = getInstrument(h.symbol)!;
+            return (
+              <Link key={h.symbol} href={instrumentHref(i)} data-testid={`holding-${h.symbol}`} className="flex min-h-14 items-center justify-between border-b border-[#F1F2F4]">
+                <span className="flex flex-col"><b className="text-[15px]">{i.name}</b><span className="text-xs text-muted-ink">{h.qty} {i.kind === "fund" ? "units" : h.qty === 1 ? "share" : "shares"} · avg {formatINR(h.avgPrice, 2)}</span></span>
+                <span className="flex flex-col text-right"><b className="text-[15px]">{formatINR(h.value, 2)}</b><span className={`text-xs ${h.pnl >= 0 ? "text-groww" : "text-loss"}`}>{formatPct(h.pnlPct)}</span></span>
+              </Link>
+            );
+          })}
+          <Link href="/stocks" className="flex min-h-11 items-center text-sm font-bold text-groww">+ Practise with any stock or fund</Link>
+        </section>
+
+        <Link href="/practice/time-machine" className="flex items-center gap-3 rounded-2xl border border-line p-3.5">
+          <span className="flex size-11 flex-none items-center justify-center rounded-xl bg-mint text-groww"><Clock className="size-[22px]" aria-hidden /></span>
+          <span className="flex flex-1 flex-col gap-0.5"><b className="text-[15px]">Time Machine</b><span className="text-[13px] text-muted-ink">Replay a monthly SIP on real past prices</span></span>
+          <ChevronRight className="size-[18px] text-[#8A8D9B]" aria-hidden />
+        </Link>
+
+        <section className="flex flex-col gap-1">
+          <div className="flex items-baseline justify-between">
+            <h2 className="text-[15px] font-bold">Basics in 2 minutes</h2>
+            <span className="text-xs text-muted-ink">{Object.keys(lessons).length} of {LESSONS.length} done</span>
+          </div>
+          {LESSONS.map((l) => (
+            <Link key={l.id} href={`/learn/${l.id}`} className="flex min-h-12 items-center gap-2.5">
+              <span className={`flex size-7 items-center justify-center rounded-full text-[13px] font-bold ${lessons[l.id] ? "bg-groww text-white" : "bg-mint text-groww"}`}>
+                {lessons[l.id] ? <Check className="size-3.5" strokeWidth={3} aria-hidden /> : l.order}
+              </span>
+              <span className="flex-1 text-sm font-semibold">{l.title}</span>
+            </Link>
+          ))}
+        </section>
       </div>
     </>
   );

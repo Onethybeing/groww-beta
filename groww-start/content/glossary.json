@@ -1,7 +1,9 @@
 {
-  "nav": { "term": "NAV · Net Asset Value", "short": "The price of one unit of a mutual fund. It's updated once a day after markets close, so everyone buying that day gets the same price.", "example": "UTI Nifty 50 Index Fund's NAV on 6 Oct 2026 was ₹160.38." },
-  "sip": { "term": "SIP · Systematic Investment Plan", "short": "An automatic, fixed investment on the same date every month. No timing the market, no daily decisions." },
-  "index_fund": { "term": "Index fund", "short": "A fund that copies a market index like the Nifty 50 instead of a manager picking stocks." },
-  "expense_ratio": { "term": "Expense ratio", "short": "The yearly fee a fund charges, as a % of your money. Lower means more stays with you." },
-  "returns": { "term": "Returns", "short": "How much your investment grew or shrank. Past returns never guarantee future returns." }
+  "nav": { "term": "NAV · Net Asset Value", "short": "The price of one unit of a mutual fund. It's updated once a day after markets close, so everyone buying that day gets the same price.", "lesson": "mutual-funds-sip" },
+  "sip": { "term": "SIP · Systematic Investment Plan", "short": "An automatic, fixed investment on the same date every month. No timing the market, no daily decisions.", "lesson": "mutual-funds-sip" },
+  "index_fund": { "term": "Index fund", "short": "A fund that copies a market index like the Nifty 50 instead of a manager picking stocks.", "lesson": "index-funds" },
+  "expense_ratio": { "term": "Expense ratio", "short": "The yearly fee a fund charges, as a % of your money. Lower means more stays with you.", "lesson": "index-funds" },
+  "returns": { "term": "Returns", "short": "How much your investment grew or shrank. Past returns never guarantee future returns.", "lesson": "ups-and-downs" },
+  "returns_pa": { "term": "Returns p.a.", "short": "\"Per annum\": the average yearly growth over that period, as if it grew at a steady rate. 1Y is the plain change over the last year.", "lesson": "ups-and-downs" },
+  "week52": { "term": "52-week range", "short": "The lowest and highest closing price over the last year. It shows how much a stock can swing, not where it will go next.", "lesson": "ups-and-downs" }
 }

@@ -27,7 +27,7 @@ export default async function SharePage(props: Props) {
   const { imgUrl, lines } = await build(props);
   return (
     <div className="flex min-h-dvh flex-col bg-surface">
-      <PageHeader title="Share your milestone" back="/progress" />
+      <PageHeader title="Share your milestone" back="/holdings" />
       <main className="flex flex-1 flex-col items-center gap-3.5 px-5 py-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img data-testid="share-card" src={imgUrl} alt={`Story card: ${lines.headline}`} width={1080} height={1920}

@@ -3,13 +3,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
-  Ban, BarChart3, Check, ChevronLeft, CircleCheck, Coins, Copy, Hourglass, Layers, LockOpen, Repeat, Scale, Tag, Waves, X,
+  Ban, BarChart3, Check, ChevronLeft, CircleCheck, Coins, Copy, Hourglass, Layers, Repeat, Scale, Tag, Waves, X,
 } from "lucide-react";
 import { RichText } from "./rich-text";
 import { PriceChart } from "@/components/charts/price-chart";
 import { useHistory } from "@/lib/market/client";
 import { useApp } from "@/lib/store";
-import { FIRST_LESSON_ID } from "@/lib/journey";
 import { LESSONS, type Card, type Lesson, type LessonIconName } from "@/lib/content";
 
 const ICONS: Record<LessonIconName, typeof Layers> = { Layers, Tag, Repeat, Scale, BarChart3, Copy, Coins, Waves, Hourglass, Ban };
@@ -28,11 +27,9 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   const isLast = i === lesson.cards.length - 1;
   const canAdvance = card.type !== "quiz" || picked !== null;
   const next = () => { if (canAdvance && !isLast) setI(i + 1); };
-  const unlocksPractice = lesson.id === FIRST_LESSON_ID;
 
   if (done) {
     const nextLesson = LESSONS.find((l) => l.order === lesson.order + 1);
-    const href = unlocksPractice ? "/practice" : nextLesson ? `/learn/${nextLesson.id}` : "/journey";
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-4 px-6 text-center">
         <motion.span initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 220 }}
@@ -40,15 +37,11 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           <Check className="size-10" strokeWidth={2.6} aria-hidden />
         </motion.span>
         <h1 className="text-2xl font-bold">Lesson complete</h1>
-        {unlocksPractice && (
-          <p className="flex items-center gap-2 rounded-[14px] bg-mint px-3.5 py-3 text-sm font-semibold text-groww-dark">
-            <LockOpen className="size-[18px]" aria-hidden /> Practice unlocked: try it with virtual money
-          </p>
+        <p className="text-[15px] text-muted-ink">Try it for real, risk-free: practise with ₹10,000 of virtual money.</p>
+        <Link href="/practice" className="flex h-[52px] w-full items-center justify-center rounded-[14px] bg-groww text-base font-bold text-white">Go to Practice</Link>
+        {nextLesson && (
+          <Link href={`/learn/${nextLesson.id}`} className="flex h-12 w-full items-center justify-center text-[15px] font-semibold text-groww">Next lesson: {nextLesson.title}</Link>
         )}
-        <Link href={href} className="flex h-[52px] w-full items-center justify-center rounded-[14px] bg-groww text-base font-bold text-white">
-          {unlocksPractice ? "Go to Practice" : nextLesson ? "Next lesson" : "Back to my journey"}
-        </Link>
-        <Link href="/learn" className="flex h-12 w-full items-center justify-center text-[15px] font-semibold text-groww">All lessons</Link>
       </div>
     );
   }
@@ -58,7 +51,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
       <header className="flex flex-col gap-2.5 px-4 pb-1.5 pt-3.5">
         <div className="flex items-center gap-2">
           {i === 0 ? (
-            <Link href="/learn" aria-label="Close lesson" className="flex size-11 items-center justify-center"><X className="size-[22px]" aria-hidden /></Link>
+            <Link href="/practice" aria-label="Close lesson" className="flex size-11 items-center justify-center"><X className="size-[22px]" aria-hidden /></Link>
           ) : (
             <button onClick={() => { setI(i - 1); setPicked(null); }} aria-label="Previous card" className="flex size-11 items-center justify-center"><ChevronLeft className="size-[22px]" aria-hidden /></button>
           )}
@@ -130,11 +123,6 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
       </main>
 
       <footer className="flex flex-col gap-2.5 px-5 pb-[22px] pt-3">
-        {isLast && unlocksPractice && (
-          <div className="flex items-center gap-2.5 rounded-[14px] bg-mint px-3.5 py-3 text-sm font-semibold text-groww-dark">
-            <LockOpen className="size-[18px]" aria-hidden /> Finishing this unlocks Practice
-          </div>
-        )}
         {!isLast ? (
           <button onClick={next} disabled={!canAdvance} className="flex h-[52px] items-center justify-center rounded-[14px] bg-groww text-base font-bold text-white disabled:opacity-50">Next</button>
         ) : (

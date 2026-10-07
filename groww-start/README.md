@@ -20,24 +20,18 @@ npm run snapshot   # refresh data/snapshot from Yahoo Finance + mfapi.in
 
 ## 5-minute demo script
 
-1. **Home → "Start here: 1-minute quiz"**: 5 one-tap questions → name a goal → persona (e.g. *Steady Starter*) + 3-step path.
-2. **Lesson 1**: tap **NAV** for the 30-second explainer → quiz → "Practice unlocked".
-3. **Practice → Time Machine**: ₹500/month in the UTI Nifty 50 Index Fund from 3 years ago → **Replay**. Real NAVs show
-   ₹18,500 invested, now worth about ₹18,176 (−1.8%), up 16% at one point. A live lesson in "ups and downs are normal".
-4. **Mock portfolio**: buy 1 Reliance share with virtual ₹10,000 at the last close → reflection prompt ("Why did you pick this?").
-5. **Invest → Start Small**: ₹250 (Chhoti SIP size) → category education + real "last 5 years" context → pick a date →
-   review → confirm (demo).
-6. **Progress** with `?demo=1` → **+1 month** twice → 3-month streak, goal ring, milestone toast → **Share** the 9:16 card
-   (habit stats only, no ₹ amounts).
+The beginner features live **inside the normal Groww flow**, plus one new **Practice** tab.
 
-## Demo controls
-
-Open with `?demo=1` or by tapping the **Groww** wordmark on Home 5 times:
-
-- **Reset demo**
-- **Persona:** jump to a preset persona
-- **+1 month:** moves the demo clock forward and records that month's SIP instalment
-- **+1 month (skip SIP):** shows the streak freeze
+1. **Home**: a new user sees an optional 3-tap prompt. Pick answers and tap **Turn on hints** (or skip it).
+2. **Start with ₹100**: this opens the UTI Nifty 50 fund page.
+   - Tap **NAV** for the "What's this?" explainer, which includes a "For you, right now" line.
+   - The **What if you'd started a SIP?** card shows real past data.
+3. **Stocks → Reliance**: the "First stock?" tip appears. Tap **Practice buy**, confirm, and answer the reflection prompt.
+4. **Practice tab**: shows the virtual portfolio, the Time Machine (replay a SIP month by month) and "Basics in 2 minutes".
+5. **Fund → Start SIP**: use the **Start small** quick picks (₹100 / ₹250 Chhoti SIP / ₹500), then start the SIP (demo).
+6. **Holdings** with `?demo=1`: tap **+1 month** twice.
+   - The **Your habit** card shows a 3-month streak, the goal ring and milestones.
+   - Tap the streak milestone to **Share** the 9:16 card (no ₹ amounts).
 
 ## How it's built
 

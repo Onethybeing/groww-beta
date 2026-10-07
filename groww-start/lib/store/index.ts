@@ -29,10 +29,18 @@ export interface AppData {
   milestones: Partial<Record<MilestoneKey, string>>;
   clockOffsetDays: number;
   newMilestone: MilestoneKey | null;
+  /** Beginner hints (explainers, tips, Start-small picks) shown across the app. */
+  hintsOn: boolean;
+  welcomeSeen: boolean;
 }
+
+export type WelcomeAnswers = Pick<Answers, "experience" | "budget" | "horizon">;
 
 export interface AppActions {
   setOnboarding(answers: Answers, goal: GoalInfo): void;
+  /** The optional new-user prompt; `null` means skipped. */
+  setWelcome(answers: WelcomeAnswers | null): void;
+  setHintsOn(on: boolean): void;
   completeLesson(id: string, quizCorrect: boolean): void;
   recordTimeMachineRun(): void;
   trade(t: { symbol: string; side: "buy" | "sell"; qty: number; price: number }, fractional: boolean): { ok: true } | { ok: false; error: string };
@@ -49,6 +57,7 @@ export type AppState = AppData & AppActions;
 export const initialData: AppData = {
   answers: null, goal: null, lessons: {}, cash: START_CASH, transactions: [], reflections: [], timeMachineRuns: 0,
   sipPlan: null, instalments: [], skippedMonths: [], milestones: {}, clockOffsetDays: 0, newMilestone: null,
+  hintsOn: true, welcomeSeen: false,
 };
 
 export function todayFor(offsetDays: number, now: Date = new Date()): string {
@@ -80,6 +89,17 @@ export const useApp = create<AppState>()(
       return {
         ...initialData,
         setOnboarding: (answers, goal) => update({ answers, goal }),
+        setWelcome: (w) => {
+          if (!w) return update({ welcomeSeen: true, hintsOn: false });
+          const goalKey = w.horizon === "lt1" ? "trip" : "wealth";
+          update({
+            answers: { goal: goalKey, reaction: "wait", ...w },
+            goal: get().goal ?? GOAL_DEFAULTS[goalKey],
+            welcomeSeen: true,
+            hintsOn: true,
+          });
+        },
+        setHintsOn: (hintsOn) => set({ hintsOn }),
         completeLesson: (id, quizCorrect) => {
           if (get().lessons[id]) return;
           update({ lessons: { ...get().lessons, [id]: { quizCorrect, completedAt: today() } } });
@@ -107,7 +127,7 @@ export const useApp = create<AppState>()(
           const extra = s.sipPlan ? dueInstalments(s.sipPlan, s.instalments, skippedMonths, next) : [];
           update({ clockOffsetDays: s.clockOffsetDays + daysBetween(cur, next), skippedMonths, instalments: [...s.instalments, ...extra] });
         },
-        applyPreset: (id) => update({ answers: PRESET_ANSWERS[id], goal: GOAL_DEFAULTS[PRESET_ANSWERS[id].goal] }),
+        applyPreset: (id) => update({ answers: PRESET_ANSWERS[id], goal: GOAL_DEFAULTS[PRESET_ANSWERS[id].goal], welcomeSeen: true, hintsOn: true }),
         dismissMilestone: () => set({ newMilestone: null }),
         reset: () => set({ ...initialData }),
       };

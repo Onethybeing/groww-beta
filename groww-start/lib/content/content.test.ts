@@ -20,6 +20,9 @@ describe("content", () => {
   it("text card icons are known lucide names", () => {
     for (const l of LESSONS) for (const c of l.cards) if (c.type === "text" && c.icon) expect(LESSON_ICON_NAMES).toContain(c.icon);
   });
+  it("glossary entries link only to existing lessons", () => {
+    for (const [key, g] of Object.entries(GLOSSARY)) if (g.lesson) expect(getLesson(g.lesson), key).toBeDefined();
+  });
   it("getLesson returns undefined for unknown ids", () => {
     expect(getLesson("nope")).toBeUndefined();
   });
