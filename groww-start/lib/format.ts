@@ -15,3 +15,8 @@ export function formatDate(iso: string): string {
   return new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
     .format(new Date(`${iso}T00:00:00Z`));
 }
+
+export function ordinal(d: number): string {
+  const tail = d % 100 >= 11 && d % 100 <= 13 ? "th" : (["th", "st", "nd", "rd"][d % 10] ?? "th");
+  return `${d}${tail}`;
+}

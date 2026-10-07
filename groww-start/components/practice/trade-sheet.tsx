@@ -7,6 +7,8 @@ import { fundUnits, heldQty } from "@/lib/engine/portfolio";
 import type { Instrument } from "@/lib/market/instruments";
 import { formatDate, formatINR } from "@/lib/format";
 
+export type TradeMode = "practice" | "real";
+
 interface Props {
   instrument: Instrument | null;
   price: number;
@@ -14,23 +16,28 @@ interface Props {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   onTraded: (side: "buy" | "sell") => void;
+  /** practice = virtual ₹10,000; real = the demo balance (orders show in Holdings). */
+  mode?: TradeMode;
+  initialSide?: "buy" | "sell";
 }
 
-export function TradeSheet({ instrument, price, priceDate, open, onOpenChange, onTraded }: Props) {
-  const trade = useApp((s) => s.trade);
-  const cash = useApp((s) => s.cash);
-  const txns = useApp((s) => s.transactions);
-  // State resets per instrument because the parent keys this component by symbol
+export function TradeSheet({ instrument, price, priceDate, open, onOpenChange, onTraded, mode = "practice", initialSide = "buy" }: Props) {
+  const real = mode === "real";
+  const act = useApp((s) => (real ? s.placeOrder : s.trade));
+  const balance = useApp((s) => (real ? s.wallet : s.cash));
+  const txns = useApp((s) => (real ? s.orders : s.transactions));
+  // State resets per instrument because the parent keys this component
   const isFund = instrument?.kind === "fund";
-  const [side, setSide] = useState<"buy" | "sell">("buy");
-  const [input, setInput] = useState(isFund ? "500" : "1");
+  const held = instrument ? heldQty(txns, instrument.symbol) : 0;
+  const [side, setSide] = useState<"buy" | "sell">(initialSide === "sell" && held > 0 ? "sell" : "buy");
+  const [input, setInput] = useState(isFund ? (side === "sell" ? String(held) : "500") : "1");
   const [error, setError] = useState<string | null>(null);
 
-  const held = instrument ? heldQty(txns, instrument.symbol) : 0;
   const qty = isFund && side === "buy" ? fundUnits(Number(input), price) : Number(input);
   const value = Number.isFinite(qty) ? qty * price : 0;
   const label = isFund ? (side === "buy" ? "Amount (₹)" : "Units") : "Shares";
-  const cashAfter = side === "buy" ? cash - value : cash + value;
+  const after = side === "buy" ? balance - value : balance + value;
+  const balanceLabel = real ? "Demo balance" : "Virtual cash";
 
   const pickSide = (s: "buy" | "sell") => {
     setSide(s);
@@ -41,7 +48,7 @@ export function TradeSheet({ instrument, price, priceDate, open, onOpenChange, o
 
   const submit = () => {
     if (!instrument) return;
-    const r = trade({ symbol: instrument.symbol, side, qty, price }, isFund);
+    const r = act({ symbol: instrument.symbol, side, qty, price }, isFund);
     if (!r.ok) { setError(r.error); return; }
     onOpenChange(false);
     onTraded(side);
@@ -49,12 +56,14 @@ export function TradeSheet({ instrument, price, priceDate, open, onOpenChange, o
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="mx-auto max-w-[430px] gap-3.5 rounded-t-3xl px-[22px] pb-[26px] pt-5">
+      <SheetContent side="bottom" data-testid={`trade-sheet-${mode}`} className="mx-auto max-w-[430px] gap-3.5 rounded-t-3xl px-[22px] pb-[26px] pt-5">
         {instrument && (
           <>
-            <span className="self-start rounded-full bg-[#FFF4E0] px-2.5 py-1 text-xs font-bold text-[#8A4B00]">Practice · virtual money</span>
+            <span className={`self-start rounded-full px-2.5 py-1 text-xs font-bold ${real ? "bg-mint text-groww" : "bg-[#FFF4E0] text-[#8A4B00]"}`}>
+              {real ? "Demo balance · no real money" : "Practice · virtual money"}
+            </span>
             <div className="flex flex-col gap-0.5">
-              <SheetTitle className="text-xl font-bold text-ink">Practice {side} · {instrument.short}</SheetTitle>
+              <SheetTitle className="text-xl font-bold text-ink">{real ? "" : "Practice "}{side === "buy" ? (real ? "Buy" : "buy") : real ? "Sell" : "sell"} · {instrument.short}</SheetTitle>
               <SheetDescription className="text-sm text-muted-ink">
                 Fills at {isFund ? "NAV" : "last close"} {formatINR(price, 2)}{priceDate ? ` · ${formatDate(priceDate)}` : ""}
               </SheetDescription>
@@ -68,18 +77,22 @@ export function TradeSheet({ instrument, price, priceDate, open, onOpenChange, o
             <label className="flex flex-col gap-1.5 text-[13px] font-semibold text-muted-ink">{label}
               <div className="flex items-center gap-2">
                 {!isFund && <button type="button" aria-label="Fewer shares" onClick={() => step(-1)} className="flex size-12 items-center justify-center rounded-xl border border-line text-ink"><Minus className="size-5" aria-hidden /></button>}
-                <input inputMode="decimal" value={input} onChange={(e) => { setInput(e.target.value.replace(/[^\d.]/g, "")); setError(null); }}
+                <input inputMode="decimal" aria-label={label} value={input} onChange={(e) => { setInput(e.target.value.replace(/[^\d.]/g, "")); setError(null); }}
                   className="h-12 min-w-0 flex-1 rounded-xl border border-line text-center text-lg font-bold text-ink" />
                 {!isFund && <button type="button" aria-label="More shares" onClick={() => step(1)} className="flex size-12 items-center justify-center rounded-xl border border-line text-ink"><Plus className="size-5" aria-hidden /></button>}
               </div>
             </label>
             <div className="flex justify-between text-sm text-[#3D4050]"><span>{isFund && side === "buy" ? `≈ ${qty} units` : "Order value"}</span><b>{formatINR(value, 2)}</b></div>
-            <div className="flex justify-between text-sm text-[#3D4050]"><span>Virtual cash after</span><b>{formatINR(Math.max(0, cashAfter), 2)}</b></div>
+            <div className="flex justify-between text-sm text-[#3D4050]"><span>{balanceLabel} after</span><b>{formatINR(Math.max(0, after), 2)}</b></div>
             {held > 0 && <p className="text-xs text-muted-ink">You hold {held} {isFund ? "units" : held === 1 ? "share" : "shares"}</p>}
             {error && <p role="alert" className="text-sm font-semibold text-loss">{error}</p>}
             <button type="button" onClick={submit}
-              className="flex h-[52px] items-center justify-center rounded-[14px] bg-ink text-base font-bold text-white">Confirm practice {side}</button>
-            <span className="text-center text-xs text-muted-ink">Nothing real is bought or sold. Track it in the Practice tab.</span>
+              className={`flex h-[52px] items-center justify-center rounded-[14px] text-base font-bold text-white ${real ? (side === "sell" ? "bg-loss" : "bg-groww") : "bg-ink"}`}>
+              Confirm {real ? "" : "practice "}{side}
+            </button>
+            <span className="text-center text-xs text-muted-ink">
+              {real ? "Demo money only · no real order is placed. See it in Holdings." : "Nothing real is bought or sold. Track it in the Practice tab."}
+            </span>
           </>
         )}
       </SheetContent>

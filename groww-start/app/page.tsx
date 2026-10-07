@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { ChevronRight, FlaskConical } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
-import { Monogram, instrumentHref } from "@/components/instrument-row";
+import { InstrumentRow, Monogram, instrumentHref } from "@/components/instrument-row";
 import { WelcomeSheet } from "@/components/welcome-sheet";
 import { useApp } from "@/lib/store";
 import { useQuotes } from "@/lib/market/client";
@@ -15,7 +15,8 @@ const INDICES = ["^NSEI", "GOLDBEES.NS"];
 
 export default function Home() {
   const hintsOn = useApp((s) => s.hintsOn);
-  const { data: quotes } = useQuotes([...INDICES, ...POPULAR]);
+  const watchlist = useApp((s) => s.watchlist);
+  const { data: quotes } = useQuotes([...new Set([...INDICES, ...POPULAR, ...watchlist])]);
   const q = (s: string) => quotes?.find((x) => x.symbol === s);
   const answers = useApp((s) => s.answers);
   const starter = starterFund(answers);
@@ -50,6 +51,16 @@ export default function Home() {
             </span>
             <ChevronRight className="size-[18px] text-groww" aria-hidden />
           </Link>
+        )}
+
+        {watchlist.length > 0 && (
+          <section data-testid="watchlist" className="flex flex-col">
+            <h2 className="mb-1 text-[17px] font-bold">Your watchlist</h2>
+            {watchlist.map((sym, idx) => {
+              const i = getInstrument(sym);
+              return i ? <InstrumentRow key={sym} i={i} index={idx} q={q(sym)} sub={i.kind === "fund" ? "Mutual fund" : `NSE: ${i.short}`} /> : null;
+            })}
+          </section>
         )}
 
         <section className="flex flex-col gap-2.5">

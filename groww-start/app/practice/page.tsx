@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { Check, ChevronRight, Clock, Sprout } from "lucide-react";
 import { instrumentHref } from "@/components/instrument-row";
-import { useApp } from "@/lib/store";
+import { useApp, useHasActiveSip } from "@/lib/store";
 import { useQuotes } from "@/lib/market/client";
 import { getInstrument } from "@/lib/market/instruments";
 import { starterFund, starterSipHref } from "@/lib/starter";
@@ -17,7 +17,7 @@ export default function PracticePage() {
   const txns = useApp((s) => s.transactions);
   const lessons = useApp((s) => s.lessons);
   const practised = useApp((s) => s.transactions.length > 0 || s.timeMachineRuns > 0);
-  const hasSip = useApp((s) => s.sipPlan !== null);
+  const hasSip = useHasActiveSip();
   const answers = useApp((s) => s.answers);
   const starter = starterFund(answers);
   const held = useMemo(() => [...new Set(txns.map((t) => t.symbol))], [txns]);

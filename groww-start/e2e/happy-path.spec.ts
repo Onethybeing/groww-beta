@@ -28,6 +28,13 @@ test("Groww flow with beginner features: hints → explainer → practice buy �
   await expect(page.getByTestId("practice-done")).toBeVisible();
   await page.getByRole("button", { name: "Skip" }).click();
 
+  // Real-demo Buy uses the ₹25,000 demo balance (separate from Practice)
+  await page.getByTestId("watch-toggle").click();
+  await page.getByRole("button", { name: "Buy", exact: true }).click();
+  await expect(page.getByTestId("trade-sheet-real")).toBeVisible();
+  await page.getByRole("button", { name: "Confirm buy" }).click();
+  await expect(page.getByTestId("order-done")).toBeVisible();
+
   // Practice tab shows the virtual holding
   await page.getByTestId("practice-done").click();
   await expect(page.getByTestId("holding-RELIANCE.NS")).toBeVisible();
@@ -45,6 +52,18 @@ test("Groww flow with beginner features: hints → explainer → practice buy �
   await page.getByRole("button", { name: "+1 month", exact: true }).click();
   await expect(page.getByTestId("streak-count")).toHaveText("3");
   await page.getByRole("button", { name: /close demo controls/i }).click();
+  await expect(page.getByTestId("real-RELIANCE.NS")).toBeVisible();
+  await expect(page.getByTestId("wallet")).not.toHaveText("₹25,000.00");
+
+  // Manage the SIP: pause it
+  await page.getByTestId("sip-MF120716").click();
+  await page.getByRole("button", { name: "Pause SIP" }).click();
+  await expect(page.getByTestId("sip-status")).toHaveText("paused");
+  await page.goto("/orders");
+  await expect(page.getByTestId("order-row").first()).toBeVisible();
+  await page.goto("/");
+  await expect(page.getByTestId("watchlist")).toBeVisible();
+  await page.goto("/holdings");
   await page.getByTestId("milestone-streak_3").click();
   const card = page.getByTestId("share-card");
   await expect(card).toBeVisible();
