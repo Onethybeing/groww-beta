@@ -7,10 +7,10 @@ import { GoalRing } from "@/components/goal-ring";
 import { MilestoneIcon } from "@/components/milestone-icon";
 import { useShareHref } from "@/components/milestone-toast";
 import { instrumentHref } from "@/components/instrument-row";
-import { useApp, useToday } from "@/lib/store";
+import { totalFreezesOf, useApp, useToday } from "@/lib/store";
+import { computeStreak } from "@/lib/engine/streak";
 import { useHistories, useQuotes } from "@/lib/market/client";
 import { getInstrument } from "@/lib/market/instruments";
-import { computeStreak } from "@/lib/engine/streak";
 import { valueInstalments } from "@/lib/engine/instalments";
 import { forSip, nextSipDate } from "@/lib/engine/sips";
 import { holdings } from "@/lib/engine/portfolio";
@@ -59,7 +59,9 @@ export default function HoldingsPage() {
   const pnl = value - invested;
 
   const active = sips.filter((s) => s.status === "active");
-  const streak = computeStreak(instalments.map((i) => i.date), today);
+  const freezes = useApp(totalFreezesOf);
+  const streak = computeStreak(instalments.map((i) => i.date), today, freezes);
+  const freezesLeft = freezes - streak.freezesUsed;
   const nextSip = active.map((s) => nextSipDate(s, instalments, today)).sort()[0];
   const earned = MILESTONE_ORDER.filter((k) => milestones[k]).sort((a, b) => (milestones[b]! > milestones[a]! ? 1 : -1));
 
@@ -90,7 +92,7 @@ export default function HoldingsPage() {
         <section aria-label="Your habit" data-testid="habit-card" className="flex flex-col gap-3 rounded-[18px] border border-[#F6DDBE] bg-[#FFF8EF] px-4 py-3.5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-[0.08em] text-[#8A4B00]">Your habit</span>
-            {sips.length > 0 && <span className="text-xs text-[#7A4A12]">{streak.freezesUsed > 0 ? "Streak freeze used" : "1 streak freeze ready"}</span>}
+            {sips.length > 0 && <span className="text-xs text-[#7A4A12]">{freezesLeft} streak freeze{freezesLeft === 1 ? "" : "s"} ready</span>}
           </div>
           {sips.length > 0 ? (
             <div className="flex items-center gap-3.5">
@@ -110,6 +112,10 @@ export default function HoldingsPage() {
               {earned.map((k, idx) => <MilestoneChip key={k} k={k} highlight={idx === 0} />)}
             </div>
           )}
+          <Link href="/refer" data-testid="refer-link" className="flex items-center justify-between rounded-xl bg-white px-3 py-2.5 text-[13px] font-semibold text-[#8A4B00]">
+            Invite friends · earn streak freezes
+            <ChevronRight className="size-4" aria-hidden />
+          </Link>
           <span className="text-[11px] text-[#7A4A12]">Milestones reward consistency and learning, never trading more.</span>
         </section>
 

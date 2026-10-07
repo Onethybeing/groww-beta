@@ -159,7 +159,31 @@ describe("store", () => {
     expect(s().wallet).toBe(25000);
   });
 
+  it("referrals: own code, accept once, reject own/invalid codes", () => {
+    expect(s().myCode()).toMatch(/^GROW-/);
+    expect(s().acceptReferral("GROW-AB0C")).toEqual({ ok: false, error: "That invite code isn't valid" });
+    expect(s().acceptReferral(s().myCode())).toEqual({ ok: false, error: "That's your own invite code" });
+    expect(s().acceptReferral("grow-ab2c")).toEqual({ ok: true });
+    expect(s().referredBy).toBe("GROW-AB2C");
+    expect(s().acceptReferral("GROW-XY3Z")).toEqual({ ok: false, error: "You've already joined with an invite" });
+    expect(s().totalFreezes()).toBe(2);
+  });
+
+  it("referrals: each friend adds a streak freeze, which keeps a streak alive through missed months", () => {
+    s().simulateFriendJoined();
+    s().simulateFriendJoined();
+    expect(s().referrals).toHaveLength(2);
+    expect(s().totalFreezes()).toBe(3);
+    s().startSip({ category: "index", symbol: "MF120716", amount: 100, day: 7 });
+    s().advanceMonth(true);
+    s().advanceMonth(true);
+    s().advanceMonth(false);
+    expect(s().instalments).toHaveLength(2);
+    expect(s().streakNow().current).toBe(2);
+  });
+
   it("discards persisted state from an older schema version", async () => {
+
     localStorage.setItem(mod.STORE_KEY, JSON.stringify({ state: { cash: "oops", answers: 42 }, version: 0 }));
     await mod.useApp.persist.rehydrate();
     expect(s().cash).toBe(10000);

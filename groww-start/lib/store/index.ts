@@ -2,12 +2,13 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { toISTDate, dateInMonth, monthKey, nextMonthKey, daysBetween } from "@/lib/engine/dates";
 import { applyTrade, type Txn } from "@/lib/engine/portfolio";
-import { computeStreak } from "@/lib/engine/streak";
 import { MIN_SIP, type SipPlan } from "@/lib/engine/instalments";
 import { collectDue, updateSip, type Sip, type SipInstalment, type SipPatch } from "@/lib/engine/sips";
 import { evaluateMilestones, type MilestoneKey } from "@/lib/engine/milestones";
 import { GOAL_DEFAULTS, PRESET_ANSWERS, type Answers, type PersonaId } from "@/lib/engine/persona";
 import { round2 } from "@/lib/engine/num";
+import { computeStreak as streakOf, type StreakResult } from "@/lib/engine/streak";
+import { isValidCode, normaliseCode, referralCode, referralFreezes } from "@/lib/engine/referrals";
 
 export const STORE_KEY = "groww-genz";
 export const STORE_VERSION = 2;
@@ -45,7 +46,16 @@ export interface AppData {
   /** Beginner hints (explainers, tips, Start-small picks) shown across the app. */
   hintsOn: boolean;
   welcomeSeen: boolean;
+  /** Referrals (post-MVP): rewards are streak freezes only. */
+  userId: string;
+  referrals: { name: string; joinedAt: string }[];
+  referredBy: string | null;
 }
+
+/** Every user has one streak freeze; referrals add more (capped). */
+export const BASE_FREEZES = 1;
+export const totalFreezesOf = (s: Pick<AppData, "referrals" | "referredBy">) =>
+  BASE_FREEZES + referralFreezes(s.referrals.length, s.referredBy !== null);
 
 export type WelcomeAnswers = Pick<Answers, "goal" | "experience" | "budget" | "horizon">;
 type OrderInput = { symbol: string; side: "buy" | "sell"; qty: number; price: number };
@@ -69,6 +79,12 @@ export interface AppActions {
   updateSip(id: string, patch: SipPatch): Result;
   advanceMonth(skipSip: boolean): void;
   applyPreset(id: PersonaId): void;
+  myCode(): string;
+  acceptReferral(code: string): Result;
+  /** Demo control: pretend a friend joined with your code. */
+  simulateFriendJoined(): void;
+  totalFreezes(): number;
+  streakNow(): StreakResult;
   dismissMilestone(): void;
   reset(): void;
 }
@@ -79,7 +95,10 @@ export const initialData: AppData = {
   answers: null, goal: null, lessons: {}, cash: START_CASH, transactions: [], reflections: [], timeMachineRuns: 0,
   wallet: START_WALLET, orders: [], sips: [], instalments: [], missed: [], skippedMonths: [], watchlist: [],
   milestones: {}, clockOffsetDays: 0, newMilestone: null, hintsOn: true, welcomeSeen: false,
+  userId: "local", referrals: [], referredBy: null,
 };
+
+const newUserId = () => (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `u-${Date.now()}`);
 
 export function todayFor(offsetDays: number, now: Date = new Date()): string {
   return toISTDate(new Date(now.getTime() + offsetDays * 86_400_000));
@@ -92,7 +111,7 @@ function settle(s: AppData): Partial<AppData> {
     timeMachineRuns: s.timeMachineRuns,
     mockBuys: s.transactions.filter((t) => t.side === "buy").length,
     instalments: s.instalments.length,
-    streak: computeStreak(s.instalments.map((i) => i.date), today).current,
+    streak: streakOf(s.instalments.map((i) => i.date), today, totalFreezesOf(s)).current,
   }, s.milestones, today);
   const keys = Object.keys(fresh) as MilestoneKey[];
   if (keys.length === 0) return {};
@@ -105,7 +124,7 @@ export function migrateV1(old: Record<string, unknown>): AppData {
   const sips: Sip[] = sipPlan ? [{ id: "sip-1", ...sipPlan, status: "active" }] : [];
   const instalments: SipInstalment[] = sipPlan ? (rest.instalments ?? []).map((i) => ({ ...i, sipId: "sip-1" })) : [];
   const spent = instalments.reduce((a, i) => a + i.amount, 0);
-  return { ...initialData, ...rest, sips, instalments, wallet: Math.max(0, round2(START_WALLET - spent)) };
+  return { ...initialData, userId: newUserId(), ...rest, sips, instalments, wallet: Math.max(0, round2(START_WALLET - spent)) };
 }
 
 export const useApp = create<AppState>()(
@@ -118,6 +137,7 @@ export const useApp = create<AppState>()(
       const today = () => todayFor(get().clockOffsetDays);
       return {
         ...initialData,
+        userId: newUserId(),
         setOnboarding: (answers, goal) => update({ answers, goal }),
         setWelcome: (w) => {
           if (!w) return update({ welcomeSeen: true, hintsOn: false });
@@ -185,8 +205,23 @@ export const useApp = create<AppState>()(
           });
         },
         applyPreset: (id) => update({ answers: PRESET_ANSWERS[id], goal: GOAL_DEFAULTS[PRESET_ANSWERS[id].goal], welcomeSeen: true, hintsOn: true }),
+        myCode: () => referralCode(get().userId),
+        acceptReferral: (code) => {
+          const c = normaliseCode(code);
+          if (!isValidCode(c)) return { ok: false, error: "That invite code isn't valid" };
+          if (c === referralCode(get().userId)) return { ok: false, error: "That's your own invite code" };
+          if (get().referredBy) return { ok: false, error: "You've already joined with an invite" };
+          update({ referredBy: c });
+          return { ok: true };
+        },
+        simulateFriendJoined: () => {
+          const r = get().referrals;
+          update({ referrals: [...r, { name: `Friend ${r.length + 1}`, joinedAt: today() }] });
+        },
+        totalFreezes: () => totalFreezesOf(get()),
+        streakNow: () => streakOf(get().instalments.map((i) => i.date), today(), totalFreezesOf(get())),
         dismissMilestone: () => set({ newMilestone: null }),
-        reset: () => set({ ...initialData }),
+        reset: () => set({ ...initialData, userId: newUserId() }),
       };
     },
     {
@@ -194,7 +229,7 @@ export const useApp = create<AppState>()(
       version: STORE_VERSION,
       storage: createJSONStorage(() => localStorage),
       migrate: (persisted, version) =>
-        (version === 1 && persisted && typeof persisted === "object" ? migrateV1(persisted as Record<string, unknown>) : { ...initialData }) as AppState,
+        (version === 1 && persisted && typeof persisted === "object" ? migrateV1(persisted as Record<string, unknown>) : { ...initialData, userId: newUserId() }) as AppState,
     },
   ),
 );
