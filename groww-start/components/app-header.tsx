@@ -3,11 +3,12 @@ import Link from "next/link";
 import { useRef } from "react";
 import { Search } from "lucide-react";
 import { useUi } from "@/lib/store/ui";
+import { GrowLogo } from "@/components/brand/grow-logo";
 import { useToday, useApp } from "@/lib/store";
 import { formatDate } from "@/lib/format";
 
-/** Groww top bar with the Explore / Holdings switch. Tapping the wordmark 5× opens demo controls. */
-export function GrowwHeader({ active }: { active: "explore" | "holdings" }) {
+/** GROW Beta top bar with the Explore / Holdings switch. Tapping the wordmark 5× opens demo controls. */
+export function AppHeader({ active }: { active: "explore" | "holdings" }) {
   const setDemoOpen = useUi((s) => s.setDemoOpen);
   const offset = useApp((s) => s.clockOffsetDays);
   const today = useToday();
@@ -29,10 +30,7 @@ export function GrowwHeader({ active }: { active: "explore" | "holdings" }) {
   return (
     <>
       <header className="flex items-center justify-between px-5 pb-2.5 pt-3.5">
-        <div className="flex items-center gap-2">
-          <button onClick={onLogoTap} className="text-[22px] font-bold tracking-tight text-groww" aria-label="Groww">Groww</button>
-          <span className="rounded-full bg-[#F1F2F4] px-2 py-[3px] text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-ink">Concept</span>
-        </div>
+        <button onClick={onLogoTap} aria-label="GROW Beta"><GrowLogo /></button>
         <div className="flex items-center gap-1">
           {offset > 0 && <span className="text-xs text-muted-ink">Demo date: {formatDate(today)}</span>}
           <Link href="/stocks" aria-label="Search" className="flex size-11 items-center justify-center"><Search className="size-[22px]" aria-hidden /></Link>

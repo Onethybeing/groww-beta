@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { ChevronRight, FlaskConical } from "lucide-react";
-import { GrowwHeader } from "@/components/groww-header";
+import { AppHeader } from "@/components/app-header";
 import { Monogram, instrumentHref } from "@/components/instrument-row";
 import { WelcomeSheet } from "@/components/welcome-sheet";
 import { useApp } from "@/lib/store";
@@ -20,7 +20,7 @@ export default function Home() {
 
   return (
     <>
-      <GrowwHeader active="explore" />
+      <AppHeader active="explore" />
       <div className="flex flex-col gap-4 px-5 py-3.5">
         <div className="flex gap-2.5">
           {INDICES.map((s) => {
@@ -80,6 +80,10 @@ export default function Home() {
             <Link href="/funds" className="rounded-full border border-line px-3 py-2 text-[13px] font-semibold">Gold</Link>
           </div>
         </section>
+        <p data-testid="disclaimer" className="border-t border-line pt-3 text-center text-[11px] leading-[1.5] text-muted-ink">
+          GROW Beta is a concept demo inspired by Groww · not affiliated with Groww · demo money only.<br />
+          Prices are real past data as of 7 Oct 2026 · not investment advice.
+        </p>
       </div>
       <WelcomeSheet />
     </>

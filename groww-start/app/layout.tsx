@@ -10,8 +10,8 @@ const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.e
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Groww · Start here (concept)",
-  description: "A concept demo: Learn → Practice → Invest → Build → Share for first-time investors.",
+  title: "GROW Beta · invest, practise, start small",
+  description: "GROW Beta: a concept demo of beginner investing features (learn, practise, start small, build the habit). Not affiliated with Groww. Demo money only.",
 };
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#0b7a55" };
 

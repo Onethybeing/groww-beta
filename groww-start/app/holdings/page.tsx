@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Flame, Share } from "lucide-react";
-import { GrowwHeader } from "@/components/groww-header";
+import { AppHeader } from "@/components/app-header";
 import { GoalRing } from "@/components/goal-ring";
 import { MilestoneIcon } from "@/components/milestone-icon";
 import { useShareHref } from "@/components/milestone-toast";
@@ -46,7 +46,7 @@ export default function HoldingsPage() {
 
   return (
     <>
-      <GrowwHeader active="holdings" />
+      <AppHeader active="holdings" />
       <div className="flex flex-col gap-3.5 px-5 py-3.5">
         <section className="flex flex-col gap-2.5 rounded-2xl border border-line px-4 py-3.5">
           <div className="flex justify-between text-[13px] text-muted-ink"><span>Current value</span><span>Invested</span></div>
