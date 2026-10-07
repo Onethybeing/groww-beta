@@ -53,7 +53,7 @@ SIPs with pause / resume / modify / cancel, order history, and Holdings valued a
 cd groww-start
 npm install
 npm run dev        # http://localhost:3000 (phone width ~390px)
-npm test           # 115 unit tests: engine, store, market, content, routes
+npm test           # 118 unit tests: engine, store, market, content, routes
 npm run e2e        # Playwright end-to-end on a production build (port 3100)
 npm run snapshot   # (optional) refresh data/snapshot from Yahoo Finance + mfapi.in
 ```
