@@ -2,6 +2,9 @@ import type { FundCategory, PricePoint } from "@/lib/types";
 import { round2, round3 } from "./num";
 import { dateInMonth, monthKey, nextMonthKey } from "./dates";
 
+/** Minimum SIP instalment in this demo (many AMCs accept ₹100). */
+export const MIN_SIP = 100;
+
 export interface SipPlan { category: FundCategory; symbol: string; amount: number; day: number; startDate: string }
 export interface Instalment { date: string; amount: number }
 

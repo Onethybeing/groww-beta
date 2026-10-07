@@ -100,7 +100,7 @@ describe("store", () => {
 
   it("welcome prompt: the chosen goal sets the goal tracker", () => {
     s().setWelcome({ goal: "trip", experience: "fd", budget: "100-500", horizon: "lt1" });
-    expect(s().goal).toEqual({ name: "Goa trip", target: 15000 });
+    expect(s().goal).toEqual({ name: "Trip or gadget", target: 15000 });
   });
 
   it("welcome prompt: skipping turns hints off", () => {

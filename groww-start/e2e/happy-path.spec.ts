@@ -31,10 +31,9 @@ test("Groww flow with beginner features: hints → explainer → practice buy �
   // Practice tab shows the virtual holding
   await page.getByTestId("practice-done").click();
   await expect(page.getByTestId("holding-RELIANCE.NS")).toBeVisible();
-  await expect(page.getByTestId("go-real")).toBeVisible();
-
-  // SIP order with Start small quick-picks
-  await page.goto("/funds/MF120716/sip");
+  // "Ready to go real?" leads to the starter fund's SIP order (Start small quick-picks)
+  await page.getByTestId("go-real").click();
+  await expect(page).toHaveURL(/\/funds\/MF120716\/sip$/);
   await page.getByRole("button", { name: /₹250/ }).click();
   await expect(page.getByTestId("sip-amount")).toHaveValue("250");
   await page.getByRole("button", { name: /start sip/i }).click();

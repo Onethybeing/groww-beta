@@ -6,7 +6,8 @@ import { Monogram, instrumentHref } from "@/components/instrument-row";
 import { WelcomeSheet } from "@/components/welcome-sheet";
 import { useApp } from "@/lib/store";
 import { useQuotes } from "@/lib/market/client";
-import { getInstrument, fundForCategory } from "@/lib/market/instruments";
+import { getInstrument } from "@/lib/market/instruments";
+import { starterFund } from "@/lib/starter";
 import { formatINR, formatPct } from "@/lib/format";
 
 const POPULAR = ["RELIANCE.NS", "TCS.NS", "HDFCBANK.NS", "ITC.NS"];
@@ -16,7 +17,8 @@ export default function Home() {
   const hintsOn = useApp((s) => s.hintsOn);
   const { data: quotes } = useQuotes([...INDICES, ...POPULAR]);
   const q = (s: string) => quotes?.find((x) => x.symbol === s);
-  const indexFund = fundForCategory("index");
+  const answers = useApp((s) => s.answers);
+  const starter = starterFund(answers);
 
   return (
     <>
@@ -73,7 +75,7 @@ export default function Home() {
           <h2 className="text-[17px] font-bold">Mutual fund collections</h2>
           <div className="flex flex-wrap gap-2">
             {hintsOn && (
-              <Link href={`/funds/${indexFund.symbol}`} className="rounded-full border-[1.5px] border-groww bg-mint px-3 py-2 text-[13px] font-bold text-groww">Start with ₹100</Link>
+              <Link href={`/funds/${starter.symbol}`} className="rounded-full border-[1.5px] border-groww bg-mint px-3 py-2 text-[13px] font-bold text-groww">Start with ₹100</Link>
             )}
             <Link href="/funds" className="rounded-full border border-line px-3 py-2 text-[13px] font-semibold">Index funds</Link>
             <Link href="/funds" className="rounded-full border border-line px-3 py-2 text-[13px] font-semibold">Tax saver</Link>
