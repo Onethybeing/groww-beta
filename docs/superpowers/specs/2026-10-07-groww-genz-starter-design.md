@@ -1,5 +1,26 @@
 # Groww for the Gen Z Investor — "Start Here" Demo Webapp: Design Spec
 
+> **Revision 3 (2026-10-08): "GROW Beta", a complete demo app.** User decisions:
+>
+> - **Brand:** the app is **GROW Beta** with a look-alike logo (a recreated mark, not the official Groww asset), plus
+>   a visible note: "Concept demo inspired by Groww · not affiliated · demo money only".
+> - **Data:** frozen to the real snapshot as of **7 Oct 2026** (stocks and index from Yahoo, NAVs from AMFI/mfapi).
+>   No live fetching at runtime.
+> - **Core investing loop:**
+>   - Search, watchlist, and stock and fund pages.
+>   - Real-demo Buy/Sell orders for stocks and one-time fund purchases, paid from a **₹25,000 demo balance**
+>     (Add money adds a demo top-up).
+>   - SIPs that can be paused, resumed, modified or cancelled (several SIPs allowed), with instalments paid from the demo balance.
+>   - Order history and holdings covering stocks, funds and SIPs.
+>   - Practice keeps its separate virtual ₹10,000. F&O and intraday stay out of scope.
+> - **MVP gaps closed:**
+>   - Onboarding asks for **goal**, experience, monthly amount and horizon.
+>   - Practice nudges to a first real SIP ("Ready to go real?").
+> - **Post-MVP:** **Referrals** only. Each user gets an invite code and link, and both sides earn a streak freeze
+>   (never cash). Personalised recommendations and deeper gamification stay out.
+> - **Delivery:** a public GitHub repo `Onethybeing/groww-beta`, one PR per feature, each reviewed against this spec
+>   before merge, then deployed on Vercel.
+>
 > **Revision 2 (2026-10-08): built into the trading app, not a learning app.**
 > This revision overrides §1 Framing and the §2 screen structure. The logic, data, guardrails and tests are unchanged.
 >
