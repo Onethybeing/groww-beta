@@ -4,6 +4,8 @@ import { round2 } from "@/lib/engine/num";
 import { getInstrument, type Instrument } from "./instruments";
 
 export interface HistoryDeps {
+  /** false = frozen mode: serve the snapshot without calling upstream. Defaults to true. */
+  live?: boolean;
   fetchLive: (inst: Instrument, signal: AbortSignal) => Promise<PricePoint[]>;
   readSnapshot: (symbol: string) => Promise<PricePoint[]>;
 }
@@ -21,6 +23,7 @@ export function trimToYears(points: PricePoint[], years: number): PricePoint[] {
 export async function getHistory(symbol: string, deps: HistoryDeps): Promise<HistoryResult> {
   const inst = getInstrument(symbol);
   if (!inst) throw new UnknownSymbolError(symbol);
+  if (deps.live === false) return { symbol, points: await deps.readSnapshot(symbol), source: "snapshot" };
   try {
     const points = await deps.fetchLive(inst, AbortSignal.timeout(4000));
     if (points.length < 2) throw new Error("Too few points");

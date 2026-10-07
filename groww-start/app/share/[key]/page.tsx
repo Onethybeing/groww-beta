@@ -18,7 +18,7 @@ async function build({ params, searchParams }: Props) {
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { imgUrl, lines } = await build(props);
   return {
-    title: `${lines.headline} · Groww concept`,
+    title: `${lines.headline} · GROW Beta`,
     openGraph: { title: lines.headline, description: lines.sub, images: [{ url: imgUrl, width: 1080, height: 1920 }] },
   };
 }
@@ -35,7 +35,7 @@ export default async function SharePage(props: Props) {
         <p className="text-center text-[13px] text-muted-ink">Your card shows habits only, never amounts or returns.</p>
       </main>
       <footer className="px-5 pb-[22px] pt-3">
-        <ShareActions imgUrl={imgUrl} text={`${lines.headline}! Building my investing habit on Groww.`} />
+        <ShareActions imgUrl={imgUrl} text={`${lines.headline}! Building my investing habit on GROW Beta.`} />
       </footer>
     </div>
   );

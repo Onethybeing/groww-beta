@@ -3,6 +3,7 @@ import path from "node:path";
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import { cardLines, parseShareParams } from "@/lib/share";
+import { GROW_WAVE_PATH } from "@/components/brand/grow-logo";
 
 const font = (w: 400 | 700 | 800) => readFile(path.join(process.cwd(), "assets", "fonts", `dm-sans-${w}.woff`));
 
@@ -18,7 +19,15 @@ export async function GET(req: NextRequest) {
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 104, background: "#0B7A55", color: "white", fontFamily: "DM Sans" }}>
-        <div style={{ display: "flex", fontSize: 64, fontWeight: 700 }}>Groww</div>
+        <div style={{ display: "flex", alignItems: "center", fontSize: 64, fontWeight: 800, letterSpacing: 3 }}>
+          <svg width="84" height="84" viewBox="0 0 32 32" style={{ marginRight: 24 }}>
+            <circle cx="16" cy="16" r="16" fill="#FFFFFF" />
+            <circle cx="27" cy="10.5" r="2.2" fill="#7BE0BC" />
+            <path d={GROW_WAVE_PATH} fill="none" stroke="#0B7A55" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          GROW
+          <div style={{ display: "flex", fontSize: 30, fontWeight: 700, marginLeft: 20, padding: "6px 18px", borderRadius: 999, background: "#138A63", letterSpacing: 1 }}>BETA</div>
+        </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 200, height: 200, borderRadius: 64, background: "#138A63" }}>
             <svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -34,7 +43,10 @@ export async function GET(req: NextRequest) {
             ))}
           </div>
         </div>
-        <div style={{ display: "flex", fontSize: 38, color: "#BFF0DE" }}>Learning → Practising → Investing · Concept demo</div>
+        <div style={{ display: "flex", flexDirection: "column", fontSize: 34, color: "#BFF0DE" }}>
+          <div style={{ display: "flex" }}>Learning → Practising → Investing</div>
+          <div style={{ display: "flex", fontSize: 28, marginTop: 10, opacity: 0.85 }}>GROW Beta concept demo · not affiliated with Groww · demo money</div>
+        </div>
       </div>
     ),
     {
