@@ -1,5 +1,22 @@
 # Groww for the Gen Z Investor — "Start Here" Demo Webapp: Design Spec
 
+> **Revision 2 (2026-10-08): built into the trading app, not a learning app.**
+> This revision overrides §1 Framing and the §2 screen structure. The logic, data, guardrails and tests are unchanged.
+>
+> - **The Groww trading/investing flow comes first:** Home/Explore → stock or fund page → order screen → Holdings.
+>   The beginner features complement that flow instead of replacing it.
+> - **Bottom tabs:** Home · Stocks · Mutual Funds · **Practice (new)** · Holdings.
+> - **Built into existing screens:**
+>   - Fund page: "What's this?" explainers (NAV, returns, expense ratio), a "What if you'd SIP'd" card (Time Machine),
+>     and a **Try with virtual money** button next to **Start SIP**.
+>   - Stock page: explainers (52-week range, day change), **Practice buy** next to **Buy**, and a first-order tip.
+>   - SIP order screen: **₹100 / ₹250 (Chhoti SIP) / ₹500** quick-picks and a one-time plain-language tip for first-timers.
+>   - Holdings: a "Your habit" card with the SIP streak and freeze, a goal ring and milestones. Milestones lead to the share card.
+>   - New users: an optional, skippable 3-question prompt that turns **beginner hints** on. It replaces the full-screen
+>     onboarding and persona screens. The persona survives only as the hint level and the default SIP amount.
+> - **Practice tab:** the ₹10,000 virtual portfolio, the Time Machine, and "Basics in 2 minutes" (the 3 lessons, now secondary).
+> - **Removed screens:** the Journey hub, the full-screen persona result, and the standalone Start Small and Progress tabs.
+
 **Date:** 2026-10-07
 **Source brief:** `Designing Groww for the Gen Z Investor (1).pdf`
 **Status:** Draft for review
