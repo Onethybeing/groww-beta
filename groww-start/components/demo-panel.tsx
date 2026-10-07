@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useApp, useToday } from "@/lib/store";
@@ -16,6 +17,7 @@ export function DemoPanel() {
   const today = useToday();
   const hasSip = useApp((s) => s.sipPlan !== null);
   const setDemoOpen = useUi((s) => s.setDemoOpen);
+  const router = useRouter();
   const { reset, applyPreset, advanceMonth } = useApp.getState();
   return (
     <div data-testid="demo-panel" className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-[430px] rounded-t-3xl border border-line bg-white p-4 shadow-2xl">
@@ -32,7 +34,7 @@ export function DemoPanel() {
         {PRESETS.map(([id, label]) => (
           <Button key={id} variant="outline" onClick={() => applyPreset(id)}>Persona: {label}</Button>
         ))}
-        <Button variant="destructive" onClick={() => { reset(); location.assign("/"); }}>Reset demo</Button>
+        <Button variant="destructive" onClick={() => { reset(); setDemoOpen(false); router.push("/"); }}>Reset demo</Button>
       </div>
       {!hasSip && <p className="mt-2 text-xs text-muted-ink">Start a SIP to unlock time travel.</p>}
     </div>

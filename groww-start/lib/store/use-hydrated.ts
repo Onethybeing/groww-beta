@@ -1,13 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { useApp } from "./index";
 
+/** True once the persisted store has rehydrated from browser storage (always false on the server). */
 export function useHydrated(): boolean {
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => {
-    const unsub = useApp.persist.onFinishHydration(() => setHydrated(true));
-    setHydrated(useApp.persist.hasHydrated());
-    return unsub;
-  }, []);
-  return hydrated;
+  return useSyncExternalStore(
+    (onChange) => useApp.persist.onFinishHydration(onChange),
+    () => useApp.persist.hasHydrated(),
+    () => false,
+  );
 }

@@ -77,7 +77,7 @@ export function MockPortfolio() {
         </p>
       </section>
 
-      <TradeSheet instrument={selected} price={selectedQuote?.price ?? 0} priceDate={selectedQuote?.date} open={!!selected}
+      <TradeSheet key={selected?.symbol ?? "none"} instrument={selected} price={selectedQuote?.price ?? 0} priceDate={selectedQuote?.date} open={!!selected}
         onOpenChange={(o) => { if (!o) setSelected(null); }}
         onTraded={(side) => { if (side === "buy" && txns.filter((t) => t.side === "buy").length === 0) setReflect(true); }} />
     </div>

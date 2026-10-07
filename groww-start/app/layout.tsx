@@ -6,7 +6,10 @@ import { AppChrome } from "@/components/app-chrome";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
+const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Groww · Start here (concept)",
   description: "A concept demo: Learn → Practice → Invest → Build → Share for first-time investors.",
 };

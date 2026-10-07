@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Minus, Plus } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { useApp } from "@/lib/store";
@@ -20,16 +20,11 @@ export function TradeSheet({ instrument, price, priceDate, open, onOpenChange, o
   const trade = useApp((s) => s.trade);
   const cash = useApp((s) => s.cash);
   const txns = useApp((s) => s.transactions);
-  const [side, setSide] = useState<"buy" | "sell">("buy");
-  const [input, setInput] = useState("1");
-  const [error, setError] = useState<string | null>(null);
+  // State resets per instrument because the parent keys this component by symbol
   const isFund = instrument?.kind === "fund";
-
-  useEffect(() => {
-    setSide("buy");
-    setInput(isFund ? "500" : "1");
-    setError(null);
-  }, [instrument, isFund]);
+  const [side, setSide] = useState<"buy" | "sell">("buy");
+  const [input, setInput] = useState(isFund ? "500" : "1");
+  const [error, setError] = useState<string | null>(null);
 
   const held = instrument ? heldQty(txns, instrument.symbol) : 0;
   const qty = isFund && side === "buy" ? fundUnits(Number(input), price) : Number(input);
