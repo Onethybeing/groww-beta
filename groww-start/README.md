@@ -6,7 +6,7 @@ into a Groww-style investing app as features, not as a separate learning app.
 > **GROW Beta is a concept demo inspired by Groww. It is not affiliated with Groww.** All money is demo money. Prices
 > are real past data (stocks to 7 Oct 2026, fund NAVs to 6 Oct 2026) and are not investment advice.
 
-- **Live demo:** pending the Vercel deploy (project Root Directory: `groww-start`)
+- **Live demo:** https://groww-beta.vercel.app (open on a phone, or at ~390px width; `?demo=1` shows demo controls)
 - **Brief:** [`Designing Groww for the Gen Z Investor (1).pdf`](<../Designing Groww for the Gen Z Investor (1).pdf>)
 - **Spec:** [`docs/superpowers/specs/2026-10-07-groww-genz-starter-design.md`](../docs/superpowers/specs/2026-10-07-groww-genz-starter-design.md) (revision 3 at the top)
 - **Design canvas:** https://claude.ai/artifact/UPYpc2fEhadZcqxT3ebh2c
