@@ -6,6 +6,7 @@ import { Check, ChevronLeft, Sprout } from "lucide-react";
 import { BeginnerTip } from "@/components/beginner-tip";
 import { useApp } from "@/lib/store";
 import { personaFor } from "@/lib/engine/persona";
+import { MIN_SIP } from "@/lib/engine/instalments";
 import type { Instrument } from "@/lib/market/instruments";
 import { formatINR } from "@/lib/format";
 
@@ -15,7 +16,6 @@ const PICKS = [
   { value: 500, note: "Build faster" },
 ];
 const DAYS = [1, 5, 10, 15, 20, 25];
-const MIN_SIP = 100;
 const ordinal = (d: number) => `${d}${d === 1 ? "st" : d === 2 ? "nd" : d === 3 ? "rd" : "th"}`;
 
 export function SipOrder({ instrument }: { instrument: Instrument }) {

@@ -10,6 +10,7 @@ import { useHistory } from "@/lib/market/client";
 import { getInstrument, fundForCategory } from "@/lib/market/instruments";
 import { computeStreak } from "@/lib/engine/streak";
 import { valueInstalments } from "@/lib/engine/instalments";
+import { starterSipHref } from "@/lib/starter";
 import { dateInMonth, monthKey, nextMonthKey } from "@/lib/engine/dates";
 import { MILESTONES, MILESTONE_ORDER, type MilestoneKey } from "@/lib/engine/milestones";
 import { formatDate, formatINR, formatPct } from "@/lib/format";
@@ -31,7 +32,7 @@ function MilestoneChip({ k, highlight }: { k: MilestoneKey; highlight: boolean }
 }
 
 export default function HoldingsPage() {
-  const { sipPlan, instalments, goal, milestones } = useApp();
+  const { sipPlan, instalments, goal, milestones, answers } = useApp();
   const today = useToday();
   const fund = sipPlan ? getInstrument(sipPlan.symbol) ?? fundForCategory(sipPlan.category) : null;
   const { data } = useHistory(sipPlan?.symbol ?? "MF120716");
@@ -72,7 +73,7 @@ export default function HoldingsPage() {
               {goal && <GoalRing pct={(invested / goal.target) * 100} size={56} />}
             </div>
           ) : (
-            <p className="text-sm text-[#5C3A10]">Start a SIP to build a streak. Even ₹100 a month counts. <Link href={`/funds/${fundForCategory("index").symbol}/sip`} className="font-bold text-groww underline">Start small</Link></p>
+            <p className="text-sm text-[#5C3A10]">Start a SIP to build a streak. Even ₹100 a month counts. <Link href={starterSipHref(answers)} className="font-bold text-groww underline">Start small</Link></p>
           )}
           {goal && sipPlan && <span className="text-xs text-[#5C3A10]">Goal: {goal.name} · {formatINR(invested)} of {formatINR(goal.target)}</span>}
           {earned.length > 0 && (

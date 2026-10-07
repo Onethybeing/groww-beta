@@ -4,12 +4,13 @@ import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/
 import { useApp, type WelcomeAnswers } from "@/lib/store";
 
 const QUESTIONS: { key: keyof WelcomeAnswers; label: string; options: [string, string][] }[] = [
+  { key: "goal", label: "What are you investing for?", options: [["emergency", "Emergency fund"], ["trip", "Trip or gadget"], ["studies", "Higher studies"], ["wealth", "Long-term wealth"], ["learning", "Just learning"]] },
   { key: "experience", label: "Invested before?", options: [["never", "Never"], ["fd", "FD / RD"], ["mf", "Mutual funds"], ["stocks", "Stocks"]] },
   { key: "budget", label: "Comfortable monthly amount", options: [["100-500", "₹100–500"], ["500-2k", "₹500–2k"], ["2k-5k", "₹2k–5k"], ["5k+", "₹5k+"]] },
   { key: "horizon", label: "When will you need the money?", options: [["lt1", "< 1 year"], ["1to3", "1–3 years"], ["3plus", "3+ years"]] },
 ];
 
-/** Optional new-user prompt: 3 taps turn on beginner hints. Shown once. */
+/** Optional new-user prompt: 4 taps turn on beginner hints. Shown once. */
 export function WelcomeSheet() {
   const welcomeSeen = useApp((s) => s.welcomeSeen);
   const setWelcome = useApp((s) => s.setWelcome);
@@ -18,10 +19,10 @@ export function WelcomeSheet() {
 
   return (
     <Sheet open={!welcomeSeen} onOpenChange={(open) => { if (!open) setWelcome(null); }}>
-      <SheetContent side="bottom" showCloseButton={false} data-testid="welcome-sheet" className="mx-auto max-w-[430px] gap-4 rounded-t-3xl px-[22px] pb-[26px] pt-5">
+      <SheetContent side="bottom" showCloseButton={false} data-testid="welcome-sheet" className="mx-auto max-h-[92dvh] max-w-[430px] gap-4 overflow-y-auto rounded-t-3xl px-[22px] pb-[26px] pt-5">
         <div className="flex flex-col gap-1">
-          <span className="text-xs font-bold uppercase tracking-[0.08em] text-groww">Optional · 20 seconds</span>
-          <SheetTitle className="text-[22px] font-bold leading-[1.25] text-ink">New to investing? Tell us 3 things and we&apos;ll add hints where you need them.</SheetTitle>
+          <span className="text-xs font-bold uppercase tracking-[0.08em] text-groww">Optional · 30 seconds</span>
+          <SheetTitle className="text-[22px] font-bold leading-[1.25] text-ink">New to investing? Tell us 4 things and we&apos;ll add hints where you need them.</SheetTitle>
         </div>
         {QUESTIONS.map((q) => (
           <div key={q.key} className="flex flex-col gap-2" role="group" aria-label={q.label}>

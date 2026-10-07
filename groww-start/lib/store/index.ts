@@ -34,7 +34,7 @@ export interface AppData {
   welcomeSeen: boolean;
 }
 
-export type WelcomeAnswers = Pick<Answers, "experience" | "budget" | "horizon">;
+export type WelcomeAnswers = Pick<Answers, "goal" | "experience" | "budget" | "horizon">;
 
 export interface AppActions {
   setOnboarding(answers: Answers, goal: GoalInfo): void;
@@ -91,10 +91,9 @@ export const useApp = create<AppState>()(
         setOnboarding: (answers, goal) => update({ answers, goal }),
         setWelcome: (w) => {
           if (!w) return update({ welcomeSeen: true, hintsOn: false });
-          const goalKey = w.horizon === "lt1" ? "trip" : "wealth";
           update({
-            answers: { goal: goalKey, reaction: "wait", ...w },
-            goal: get().goal ?? GOAL_DEFAULTS[goalKey],
+            answers: { reaction: "wait", ...w },
+            goal: GOAL_DEFAULTS[w.goal],
             welcomeSeen: true,
             hintsOn: true,
           });

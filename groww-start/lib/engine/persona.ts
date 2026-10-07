@@ -34,7 +34,7 @@ const PERSONAS: Record<PersonaId, Omit<PersonaResult, "id" | "suggestedAmount">>
 
 export const GOAL_DEFAULTS: Record<Goal, { name: string; target: number }> = {
   emergency: { name: "Emergency fund", target: 30000 },
-  trip: { name: "Goa trip", target: 15000 },
+  trip: { name: "Trip or gadget", target: 15000 },
   studies: { name: "Higher studies", target: 100000 },
   wealth: { name: "Long-term wealth", target: 100000 },
   learning: { name: "My first ₹5,000", target: 5000 },
