@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  outputFileTracingIncludes: { "/api/**": ["./data/snapshot/**"] },
+  outputFileTracingIncludes: { "/api/**": ["./data/snapshot/**", "./assets/fonts/**"] },
   turbopack: {
     rules: {
       "*.css": {
