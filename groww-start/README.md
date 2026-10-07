@@ -6,7 +6,7 @@ into a Groww-style investing app as features, not as a separate learning app.
 > **GROW Beta is a concept demo inspired by Groww. It is not affiliated with Groww.** All money is demo money. Prices
 > are real past data (stocks to 7 Oct 2026, fund NAVs to 6 Oct 2026) and are not investment advice.
 
-- **Live demo:** _added after deploy_
+- **Live demo:** pending the Vercel deploy (project Root Directory: `groww-start`)
 - **Brief:** [`Designing Groww for the Gen Z Investor (1).pdf`](<../Designing Groww for the Gen Z Investor (1).pdf>)
 - **Spec:** [`docs/superpowers/specs/2026-10-07-groww-genz-starter-design.md`](../docs/superpowers/specs/2026-10-07-groww-genz-starter-design.md) (revision 3 at the top)
 - **Design canvas:** https://claude.ai/artifact/UPYpc2fEhadZcqxT3ebh2c
@@ -20,8 +20,8 @@ into a Groww-style investing app as features, not as a separate learning app.
 | **MVP 3 · Mock investing** (virtual money) | **Practice** tab with ₹10,000 virtual. **Practice buy** sits next to Buy on every stock and fund. **Time Machine** replays a monthly SIP on real past NAVs. A reflection prompt follows the first trade. |
 | **MVP 4 · Micro investing** (practice → first real investment) | "Ready to go real?" nudge in Practice (persona-aware: index fund, or liquid fund for short-term goals). SIP order with **Start small** ₹100 / ₹250 (Chhoti SIP) / ₹500. Demo balance ₹25,000 for real-style SIPs, one-time buys and stock Buy/Sell. |
 | **MVP 5 · Progress & milestones** | Holdings **Your habit** card: monthly SIP streak with streak freezes, goal ring, milestones (first lesson, Time traveller, first practice buy, first investment, 3-month streak, basics done). |
-| **Post-MVP · Social achievement cards** | 9:16 share card (`/share/[milestone]`, image from `/api/card`). It shows habits only, never ₹ amounts or returns. |
-| **Post-MVP · Referrals** | `/refer` (code, link, share) and `/r/[code]` invite landing. Both people earn a **streak freeze, never cash** (capped at 3). |
+| **Post-MVP · Social achievement cards** | 9:16 share card (`/share/[key]`, image from `/api/card`). It shows habits only, never ₹ amounts or returns. |
+| **Post-MVP · Referrals** | `/refer` (code, link, share) and `/r/[code]` invite landing. Both people earn a **streak freeze, never cash**. Referral freezes are capped at 3 per user, and invites can only be claimed by new investors (no SIPs or orders yet). |
 | Post-MVP · Personalised recommendations, deeper gamification | Out of scope for this build, by decision. The persona already drives hints and the starter fund *category* (education, not advice). |
 | **Out of scope per the brief** | No F&O, intraday, advanced portfolio tools, tax, loans or insurance, and no full Groww redesign. |
 
@@ -30,7 +30,7 @@ SIPs with pause / resume / modify / cancel, order history, and Holdings valued a
 
 ## 5-minute demo script
 
-1. **Home:** answer the 4-tap prompt and tap **Turn on hints**.
+1. **Home:** answer the 4-tap prompt and tap **Turn on hints**. Hints must be on for the "Start with ₹100" chip and the tips to show.
 2. **Start with ₹100:** the fund page opens. Tap **NAV** for an explainer. The **What if you'd started a SIP?** card uses real data.
 3. **Stocks → Reliance:**
    - The "First stock?" tip shows.
@@ -42,7 +42,7 @@ SIPs with pause / resume / modify / cancel, order history, and Holdings valued a
    - Tap **+1 month** twice to reach a **3-month streak**.
    - Open the SIP to **pause** or **modify** it.
    - Open **Order history**.
-7. **Share** the 3-month-streak card, then **Invite friends**: both get a streak freeze.
+7. **Share** the 3-month-streak card, then **Invite friends**. To show the invite landing page, open your `/r/<code>` link in a private window (a new user).
 
 **Demo controls:** open with `?demo=1` or by tapping the GROW logo 5 times. They offer: reset, persona presets,
 +1 month, +1 month (skip SIP), and a simulated friend joining.
@@ -53,28 +53,28 @@ SIPs with pause / resume / modify / cancel, order history, and Holdings valued a
 cd groww-start
 npm install
 npm run dev        # http://localhost:3000 (phone width ~390px)
-npm test           # 118 unit tests: engine, store, market, content, routes
+npm test           # unit tests: engine, store, market, content, route validation
 npm run e2e        # Playwright end-to-end on a production build (port 3100)
 npm run snapshot   # (optional) refresh data/snapshot from Yahoo Finance + mfapi.in
 ```
 
-Set `LIVE_DATA=1` to fetch live prices instead of the frozen snapshot. The snapshot is the default.
+Frozen snapshot data is the default and is what the deployed demo uses. `LIVE_DATA=1` (local experiments only) fetches Yahoo Finance and mfapi.in instead. Yahoo is unofficial and non-commercial, and it can include today's in-progress bar, so don't enable it on a public deployment.
 
 ## How it's built
 
 - **Framework and UI:** Next.js 16 (App Router), Tailwind v4, shadcn/ui (Base UI), Motion, lucide icons, DM Sans.
-  Deployed on Vercel. CI (GitHub Actions) runs lint, typecheck, Vitest and `next build` on every PR.
+  Hosted on Vercel. CI (GitHub Actions) runs lint, typecheck, Vitest and `next build` on every PR.
 - **`lib/engine`:** pure, unit-tested money logic. It covers SIP replay, trailing returns, portfolio and trades, SIPs
   (wallet-gated collection, pause/resume with no back-charging), the monthly streak with freezes, persona rules,
   milestones and referral codes.
-- **`lib/store`:** a single persisted Zustand store (v2, with migration from v1). Practice money and the demo balance
+- **`lib/store`:** a single persisted Zustand store (v3, with migrations from v1 and v2). Practice money and the demo balance
   are kept strictly separate.
 - **Market data:** `/api/history` and `/api/quote` serve the committed snapshot (`data/snapshot`, about 5 years of
   daily data for 12 large caps, the Nifty 50, GOLDBEES and 6 funds).
 
 ## Compliance-minded design
 
-- No real-time prices anywhere. Mock investing uses past data (SEBI, May 2024).
+- No real-time prices in the demo (frozen snapshot). Mock investing uses past data (SEBI, May 2024).
 - Rewards are only for learning, consistency and referrals (streak freezes). There's no cash, no trading leaderboards
   and no confetti on trades.
 - The starter fund is a **category** suggestion (the same for the same answers) with past-performance disclaimers, not advice.
