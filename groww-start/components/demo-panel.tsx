@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useApp, useHasActiveSip, useToday } from "@/lib/store";
+import { useApp, useToday } from "@/lib/store";
 import { useUi } from "@/lib/store/ui";
 import { formatDate } from "@/lib/format";
 import type { PersonaId } from "@/lib/engine/persona";
@@ -15,7 +15,7 @@ const PRESETS: [PersonaId, string][] = [
 
 export function DemoPanel() {
   const today = useToday();
-  const hasSip = useHasActiveSip();
+  const hasSip = useApp((s) => s.sips.some((x) => x.status !== "cancelled"));
   const setDemoOpen = useUi((s) => s.setDemoOpen);
   const router = useRouter();
   const { reset, applyPreset, advanceMonth } = useApp.getState();

@@ -7,6 +7,7 @@ import { BeginnerTip } from "@/components/beginner-tip";
 import { useApp } from "@/lib/store";
 import { personaFor } from "@/lib/engine/persona";
 import { MIN_SIP } from "@/lib/engine/instalments";
+import { DayPicker } from "./day-picker";
 import { fundUnits } from "@/lib/engine/portfolio";
 import { useHistory } from "@/lib/market/client";
 import type { Instrument } from "@/lib/market/instruments";
@@ -17,7 +18,6 @@ const PICKS = [
   { value: 250, note: "Chhoti SIP" },
   { value: 500, note: "Build faster" },
 ];
-const DAYS = [1, 5, 10, 15, 20, 25];
 
 export function SipOrder({ instrument, initialMode = "sip" }: { instrument: Instrument; initialMode?: "sip" | "lumpsum" }) {
   const { answers, goal, hintsOn, sips, wallet, startSip, placeOrder } = useApp();
@@ -131,12 +131,7 @@ export function SipOrder({ instrument, initialMode = "sip" }: { instrument: Inst
             {mode === "sip" && (
               <div className="flex flex-col gap-2 rounded-[14px] border border-line px-3.5 py-3">
                 <span className="text-sm text-muted-ink">Monthly SIP date <span className="text-ink">· first one today</span></span>
-                <div className="grid grid-cols-6 gap-1.5">
-                  {DAYS.map((d) => (
-                    <button key={d} type="button" aria-pressed={day === d} onClick={() => setDay(d)}
-                      className={`h-9 rounded-lg text-sm ${day === d ? "border-[1.5px] border-groww bg-mint font-bold text-groww" : "border border-line"}`}>{d}</button>
-                  ))}
-                </div>
+                <DayPicker value={day} onChange={setDay} />
               </div>
             )}
             {goal && mode === "sip" && (

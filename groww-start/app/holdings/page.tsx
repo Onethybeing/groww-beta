@@ -12,7 +12,7 @@ import { useHistories, useQuotes } from "@/lib/market/client";
 import { getInstrument } from "@/lib/market/instruments";
 import { computeStreak } from "@/lib/engine/streak";
 import { valueInstalments } from "@/lib/engine/instalments";
-import { nextSipDate } from "@/lib/engine/sips";
+import { forSip, nextSipDate } from "@/lib/engine/sips";
 import { holdings } from "@/lib/engine/portfolio";
 import { starterSipHref } from "@/lib/starter";
 import { MILESTONES, MILESTONE_ORDER, type MilestoneKey } from "@/lib/engine/milestones";
@@ -51,12 +51,12 @@ export default function HoldingsPage() {
   const held = holdings(orders, prices);
   const stocks = held.filter((h) => getInstrument(h.symbol)?.kind !== "fund");
   const lumpsumFunds = held.filter((h) => getInstrument(h.symbol)?.kind === "fund");
-  const sipRows = sips.map((s) => ({ sip: s, ...valueInstalments(instalments.filter((i) => i.sipId === s.id), navs[s.symbol] ?? []) }));
+  const sipRows = sips.map((s) => ({ sip: s, ...valueInstalments(forSip(instalments, s.id), navs[s.symbol] ?? []) }));
 
-  const invested = held.reduce((a, h) => a + h.invested, 0) + sipRows.reduce((a, r) => a + r.invested, 0);
+  const sipInvested = sipRows.reduce((a, r) => a + r.invested, 0);
+  const invested = held.reduce((a, h) => a + h.invested, 0) + sipInvested;
   const value = held.reduce((a, h) => a + h.value, 0) + sipRows.reduce((a, r) => a + r.value, 0);
   const pnl = value - invested;
-  const sipInvested = sipRows.reduce((a, r) => a + r.invested, 0);
 
   const active = sips.filter((s) => s.status === "active");
   const streak = computeStreak(instalments.map((i) => i.date), today);
@@ -97,7 +97,7 @@ export default function HoldingsPage() {
               <span className="flex size-12 flex-none items-center justify-center rounded-[14px] bg-streak text-white"><Flame className="size-[26px]" aria-hidden /></span>
               <div className="flex flex-1 flex-col">
                 <b className="text-xl"><span data-testid="streak-count">{streak.current}</span>-month SIP streak</b>
-                <span className="text-[13px] text-[#5C3A10]">{nextSip ? `Next SIP on ${shortDate(nextSip)}` : "All SIPs paused"}</span>
+                <span className="text-[13px] text-[#5C3A10]">{nextSip ? `Next SIP on ${shortDate(nextSip)}` : sips.some((x) => x.status === "paused") ? "SIPs paused · resume anytime" : "No active SIP · start a new one anytime"}</span>
               </div>
               {goal && <GoalRing pct={(sipInvested / goal.target) * 100} size={56} />}
             </div>
@@ -133,7 +133,7 @@ export default function HoldingsPage() {
           {sipRows.map(({ sip, invested: inv, value: val }) => {
             const f = getInstrument(sip.symbol);
             return (
-              <Link key={sip.id} href={`/sips/${sip.id}`} data-testid={`sip-${sip.symbol}`} className="flex min-h-[60px] items-center justify-between border-b border-[#F1F2F4]">
+              <Link key={sip.id} href={`/sips/${sip.id}`} data-testid={sip.status === "cancelled" ? `sip-cancelled-${sip.id}` : `sip-${sip.symbol}`} className="flex min-h-[60px] items-center justify-between border-b border-[#F1F2F4]">
                 <span className="flex flex-col gap-0.5">
                   <b className="text-[15px]">{f?.name ?? sip.symbol}</b>
                   <span className="text-xs text-muted-ink">

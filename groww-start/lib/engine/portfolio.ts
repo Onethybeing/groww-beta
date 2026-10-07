@@ -14,7 +14,7 @@ export function heldQty(txns: Txn[], symbol: string): number {
   return round3(q);
 }
 
-export function applyTrade(state: PortfolioState, t: Txn, opts: { fractional: boolean }): TradeResult {
+export function applyTrade(state: PortfolioState, t: Txn, opts: { fractional: boolean; balanceLabel?: string }): TradeResult {
   if (!Number.isFinite(t.qty) || t.qty <= 0) return { ok: false, error: "Enter a quantity greater than 0" };
   if (!opts.fractional && !Number.isInteger(t.qty)) return { ok: false, error: "Stocks can only be bought in whole shares" };
   if (!(t.price > 0)) return { ok: false, error: "Price unavailable right now" };
@@ -22,7 +22,7 @@ export function applyTrade(state: PortfolioState, t: Txn, opts: { fractional: bo
 
   if (t.side === "buy") {
     if (amount > state.cash + EPS) {
-      return { ok: false, error: `Not enough virtual cash (₹${state.cash.toFixed(2)} available)` };
+      return { ok: false, error: `Not enough ${opts.balanceLabel ?? "virtual cash"} (₹${state.cash.toFixed(2)} available)` };
     }
     return { ok: true, state: { cash: round2(state.cash - amount), transactions: [...state.transactions, t] } };
   }

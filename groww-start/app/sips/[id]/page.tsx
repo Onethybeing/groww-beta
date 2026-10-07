@@ -5,11 +5,11 @@ import { useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { useApp, useToday } from "@/lib/store";
 import { getInstrument } from "@/lib/market/instruments";
-import { nextSipDate } from "@/lib/engine/sips";
+import { forSip, nextSipDate } from "@/lib/engine/sips";
+import { DayPicker } from "@/components/detail/day-picker";
 import { MIN_SIP } from "@/lib/engine/instalments";
 import { formatDate, formatINR, ordinal } from "@/lib/format";
 
-const DAYS = [1, 5, 10, 15, 20, 25];
 
 export default function ManageSipPage() {
   const { id } = useParams<{ id: string }>();
@@ -25,7 +25,7 @@ export default function ManageSipPage() {
     return (<><PageHeader title="SIP" back="/holdings" /><p className="p-6 text-sm text-muted-ink">This SIP doesn&apos;t exist. <Link href="/holdings" className="text-groww underline">Back to Holdings</Link></p></>);
   }
   const fund = getInstrument(sip.symbol);
-  const history = [...instalments.filter((i) => i.sipId === sip.id).map((i) => ({ ...i, ok: true })), ...missed.filter((i) => i.sipId === sip.id).map((i) => ({ ...i, ok: false }))]
+  const history = [...forSip(instalments, sip.id).map((i) => ({ ...i, ok: true })), ...forSip(missed, sip.id).map((i) => ({ ...i, ok: false }))]
     .sort((a, b) => b.date.localeCompare(a.date));
   const run = (patch: Parameters<typeof updateSip>[1], text: string) => {
     const r = updateSip(sip.id, patch);
@@ -53,12 +53,7 @@ export default function ManageSipPage() {
               <input inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value.replace(/\D/g, "").slice(0, 7))}
                 className="h-12 rounded-xl border border-line px-3 text-lg font-bold text-ink" />
             </label>
-            <div className="grid grid-cols-6 gap-1.5">
-              {DAYS.map((d) => (
-                <button key={d} type="button" aria-pressed={day === d} onClick={() => setDay(d)}
-                  className={`h-9 rounded-lg text-sm ${day === d ? "border-[1.5px] border-groww bg-mint font-bold text-groww" : "border border-line"}`}>{d}</button>
-              ))}
-            </div>
+            <DayPicker value={day} onChange={setDay} />
             <button type="button" onClick={() => run({ amount: Number(amount), day }, "SIP updated")}
               className="h-12 rounded-[14px] bg-groww text-[15px] font-bold text-white">Save changes</button>
             <span className="text-xs text-muted-ink">Minimum {formatINR(MIN_SIP)}. Changes apply from the next instalment.</span>

@@ -105,7 +105,7 @@ export function migrateV1(old: Record<string, unknown>): AppData {
   const sips: Sip[] = sipPlan ? [{ id: "sip-1", ...sipPlan, status: "active" }] : [];
   const instalments: SipInstalment[] = sipPlan ? (rest.instalments ?? []).map((i) => ({ ...i, sipId: "sip-1" })) : [];
   const spent = instalments.reduce((a, i) => a + i.amount, 0);
-  return { ...initialData, ...rest, sips, instalments, wallet: round2(START_WALLET - spent) };
+  return { ...initialData, ...rest, sips, instalments, wallet: Math.max(0, round2(START_WALLET - spent)) };
 }
 
 export const useApp = create<AppState>()(
@@ -138,8 +138,8 @@ export const useApp = create<AppState>()(
         },
         placeOrder: (t, fractional) => {
           const s = get();
-          const r = applyTrade({ cash: s.wallet, transactions: s.orders }, { ...t, id: crypto.randomUUID(), date: today() }, { fractional });
-          if (!r.ok) return { ok: false, error: r.error.replace("virtual cash", "demo balance") };
+          const r = applyTrade({ cash: s.wallet, transactions: s.orders }, { ...t, id: crypto.randomUUID(), date: today() }, { fractional, balanceLabel: "demo balance" });
+          if (!r.ok) return r;
           update({ wallet: r.state.cash, orders: r.state.transactions });
           return { ok: true };
         },
@@ -164,7 +164,7 @@ export const useApp = create<AppState>()(
           return { ok: true, id: sip.id };
         },
         updateSip: (id, patch) => {
-          const r = updateSip(get().sips, id, patch);
+          const r = updateSip(get().sips, id, patch, today());
           if (!r.ok) return r;
           update({ sips: r.sips });
           return { ok: true };

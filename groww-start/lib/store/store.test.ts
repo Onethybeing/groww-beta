@@ -71,6 +71,27 @@ describe("store", () => {
     expect(s().missed).toHaveLength(1);
   });
 
+  it("resuming a paused SIP does not charge the paused months", () => {
+    const a = s().startSip({ category: "index", symbol: "MF120716", amount: 100, day: 7 });
+    s().startSip({ category: "liquid", symbol: "MF143269", amount: 100, day: 7 });
+    if (!a.ok) throw new Error();
+    s().updateSip(a.id, { status: "paused" });
+    s().advanceMonth(false);
+    s().advanceMonth(false);
+    s().updateSip(a.id, { status: "active" });
+    s().advanceMonth(false);
+    expect(s().instalments.filter((i) => i.sipId === a.id).map((i) => i.date)).toEqual(["2026-10-07", "2027-01-07"]);
+  });
+
+  it("migration never leaves a negative demo balance", async () => {
+    localStorage.setItem(mod.STORE_KEY, JSON.stringify({ version: 1, state: {
+      sipPlan: { category: "index", symbol: "MF120716", amount: 20000, day: 5, startDate: "2026-10-01" },
+      instalments: [{ date: "2026-10-01", amount: 20000 }, { date: "2026-11-05", amount: 20000 }],
+    } }));
+    await mod.useApp.persist.rehydrate();
+    expect(s().wallet).toBe(0);
+  });
+
   it("rejects a SIP below the minimum or without demo balance", () => {
     expect(s().startSip({ category: "index", symbol: "MF120716", amount: 50, day: 7 })).toEqual({ ok: false, error: "Minimum SIP is ₹100" });
     useApp().setState({ wallet: 10 });

@@ -31,6 +31,17 @@ describe("collectDue", () => {
   });
 });
 
+describe("pause and resume", () => {
+  it("never back-charges the months a SIP was paused", () => {
+    const paused = updateSip([sip({ day: 5, startDate: "2026-10-05" })], "a", { status: "paused" }, "2026-10-20");
+    if (!paused.ok) throw new Error();
+    const resumed = updateSip(paused.sips, "a", { status: "active", amount: 5000 }, "2026-12-20");
+    if (!resumed.ok) throw new Error();
+    const r = collectDue(resumed.sips, [{ date: "2026-10-05", amount: 250, sipId: "a" }], [], "2027-01-05", 100000);
+    expect(r.paid).toEqual([{ date: "2027-01-05", amount: 5000, sipId: "a" }]);
+  });
+});
+
 describe("updateSip", () => {
   it("modifies amount and day", () => {
     const r = updateSip([sip({})], "a", { amount: 500, day: 15 });

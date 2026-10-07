@@ -4,6 +4,8 @@ import { dateInMonth, monthKey, nextMonthKey } from "./dates";
 
 /** Minimum SIP instalment in this demo (many AMCs accept ₹100). */
 export const MIN_SIP = 100;
+/** SIP dates offered in the UI (1–28 are valid). */
+export const SIP_DAYS = [1, 5, 10, 15, 20, 25] as const;
 
 export interface SipPlan { category: FundCategory; symbol: string; amount: number; day: number; startDate: string }
 export interface Instalment { date: string; amount: number }

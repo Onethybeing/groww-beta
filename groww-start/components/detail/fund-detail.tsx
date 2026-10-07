@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { Clock } from "lucide-react";
 import { DetailHeader } from "./detail-header";
 import { useTrade } from "./practice-trade";
+import { useApp } from "@/lib/store";
+import { heldQty } from "@/lib/engine/portfolio";
 import { Explain } from "@/components/explain";
 import { PriceChart } from "@/components/charts/price-chart";
 import { useHistory } from "@/lib/market/client";
@@ -27,6 +29,8 @@ export function FundDetail({ instrument }: { instrument: Instrument }) {
   const points = data?.points ?? NO_POINTS;
   const last = points.at(-1);
   const trade = useTrade(instrument, last?.close ?? 0, last?.date, "practice");
+  const real = useTrade(instrument, last?.close ?? 0, last?.date, "real");
+  const heldReal = useApp((s) => heldQty(s.orders, instrument.symbol));
 
   const view = useMemo(() => {
     if (!last) return [];
@@ -93,7 +97,14 @@ export function FundDetail({ instrument }: { instrument: Instrument }) {
             <span className="text-[13px] font-bold text-groww">Replay month by month in Practice →</span>
           </Link>
         )}
+        {heldReal > 0 && (
+          <div className="flex items-center justify-between rounded-[14px] border border-line px-3.5 py-3 text-sm">
+            <span>You hold <b>{heldReal}</b> units (one-time, demo)</span>
+            <button type="button" onClick={() => real.openSheet("sell")} className="font-bold text-loss">Sell</button>
+          </div>
+        )}
         {trade.notice}
+        {real.notice}
         <p className="text-xs text-muted-ink">Real past NAVs from AMFI via mfapi.in, as of {formatDate(last.date)}. Past performance doesn&apos;t guarantee future returns.</p>
       </main>
 
@@ -105,6 +116,7 @@ export function FundDetail({ instrument }: { instrument: Instrument }) {
         <Link href={`/funds/${instrument.symbol}/sip`} className="flex h-[52px] items-center justify-center rounded-[14px] bg-groww text-base font-bold text-white">Start SIP</Link>
       </footer>
       {trade.sheet}
+      {real.sheet}
     </div>
   );
 }
