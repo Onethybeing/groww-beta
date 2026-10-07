@@ -15,7 +15,7 @@ const PRESETS: [PersonaId, string][] = [
 
 export function DemoPanel() {
   const today = useToday();
-  const hasSip = useApp((s) => s.sipPlan !== null);
+  const hasSip = useApp((s) => s.sips.some((x) => x.status !== "cancelled"));
   const setDemoOpen = useUi((s) => s.setDemoOpen);
   const router = useRouter();
   const { reset, applyPreset, advanceMonth } = useApp.getState();

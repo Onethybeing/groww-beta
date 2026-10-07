@@ -33,7 +33,7 @@ export function AppHeader({ active }: { active: "explore" | "holdings" }) {
         <button onClick={onLogoTap} aria-label="GROW Beta"><GrowLogo /></button>
         <div className="flex items-center gap-1">
           {offset > 0 && <span className="text-xs text-muted-ink">Demo date: {formatDate(today)}</span>}
-          <Link href="/stocks" aria-label="Search" className="flex size-11 items-center justify-center"><Search className="size-[22px]" aria-hidden /></Link>
+          <Link href="/search" aria-label="Search" className="flex size-11 items-center justify-center"><Search className="size-[22px]" aria-hidden /></Link>
         </div>
       </header>
       <div className="flex gap-[18px] border-b border-line px-5">

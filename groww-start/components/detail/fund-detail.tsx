@@ -3,7 +3,9 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Clock } from "lucide-react";
 import { DetailHeader } from "./detail-header";
-import { usePracticeTrade } from "./practice-trade";
+import { useTrade } from "./practice-trade";
+import { useApp } from "@/lib/store";
+import { heldQty } from "@/lib/engine/portfolio";
 import { Explain } from "@/components/explain";
 import { PriceChart } from "@/components/charts/price-chart";
 import { useHistory } from "@/lib/market/client";
@@ -26,7 +28,9 @@ export function FundDetail({ instrument }: { instrument: Instrument }) {
   const [range, setRange] = useState<(typeof RANGES)[number][0]>("5Y");
   const points = data?.points ?? NO_POINTS;
   const last = points.at(-1);
-  const trade = usePracticeTrade(instrument, last?.close ?? 0, last?.date);
+  const trade = useTrade(instrument, last?.close ?? 0, last?.date, "practice");
+  const real = useTrade(instrument, last?.close ?? 0, last?.date, "real");
+  const heldReal = useApp((s) => heldQty(s.orders, instrument.symbol));
 
   const view = useMemo(() => {
     if (!last) return [];
@@ -42,13 +46,13 @@ export function FundDetail({ instrument }: { instrument: Instrument }) {
     return { ...r, bestPct: Math.round(((best.value - best.invested) / best.invested) * 100), bestDate: best.date };
   }, [points, last]);
 
-  if (!last) return (<><DetailHeader back="/funds" /><div className="mx-5 h-64 animate-pulse rounded-2xl bg-surface" /></>);
+  if (!last) return (<><DetailHeader back="/funds" symbol={instrument.symbol} /><div className="mx-5 h-64 animate-pulse rounded-2xl bg-surface" /></>);
 
   const returns = ([1, 3, 5] as const).map((y) => ({ y, v: trailingReturn(points, y) }));
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <DetailHeader back="/funds" />
+      <DetailHeader back="/funds" symbol={instrument.symbol} />
       <main className="flex flex-1 flex-col gap-3.5 px-5 pb-28">
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-bold leading-[1.25]">{instrument.name}</h1>
@@ -93,18 +97,26 @@ export function FundDetail({ instrument }: { instrument: Instrument }) {
             <span className="text-[13px] font-bold text-groww">Replay month by month in Practice →</span>
           </Link>
         )}
+        {heldReal > 0 && (
+          <div className="flex items-center justify-between rounded-[14px] border border-line px-3.5 py-3 text-sm">
+            <span>You hold <b>{heldReal}</b> units (one-time, demo)</span>
+            <button type="button" onClick={() => real.openSheet("sell")} className="font-bold text-loss">Sell</button>
+          </div>
+        )}
         {trade.notice}
+        {real.notice}
         <p className="text-xs text-muted-ink">Real past NAVs from AMFI via mfapi.in, as of {formatDate(last.date)}. Past performance doesn&apos;t guarantee future returns.</p>
       </main>
 
       <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto grid max-w-[430px] grid-cols-2 gap-2.5 border-t border-line bg-white px-5 pb-[22px] pt-3">
-        <button type="button" onClick={trade.openSheet}
+        <button type="button" onClick={() => trade.openSheet()}
           className="flex h-[52px] flex-col items-center justify-center rounded-[14px] border-[1.5px] border-groww text-groww">
           <b className="text-[15px]">Try with virtual ₹</b><span className="text-[11px] text-[#3D4050]">No real money</span>
         </button>
         <Link href={`/funds/${instrument.symbol}/sip`} className="flex h-[52px] items-center justify-center rounded-[14px] bg-groww text-base font-bold text-white">Start SIP</Link>
       </footer>
       {trade.sheet}
+      {real.sheet}
     </div>
   );
 }

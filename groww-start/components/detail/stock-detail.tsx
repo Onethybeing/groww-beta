@@ -1,7 +1,9 @@
 "use client";
 import { useMemo, useState } from "react";
 import { DetailHeader } from "./detail-header";
-import { usePracticeTrade } from "./practice-trade";
+import { useTrade } from "./practice-trade";
+import { useApp } from "@/lib/store";
+import { heldQty } from "@/lib/engine/portfolio";
 import { Monogram } from "@/components/instrument-row";
 import { Explain } from "@/components/explain";
 import { BeginnerTip } from "@/components/beginner-tip";
@@ -20,11 +22,12 @@ const NO_POINTS: PricePoint[] = [];
 export function StockDetail({ instrument }: { instrument: Instrument }) {
   const { data } = useHistory(instrument.symbol);
   const [range, setRange] = useState<(typeof RANGES)[number][0]>("1Y");
-  const [note, setNote] = useState(false);
   const points = data?.points ?? NO_POINTS;
   const last = points.at(-1);
   const prev = points.at(-2);
-  const trade = usePracticeTrade(instrument, last?.close ?? 0, last?.date);
+  const practice = useTrade(instrument, last?.close ?? 0, last?.date, "practice");
+  const real = useTrade(instrument, last?.close ?? 0, last?.date, "real");
+  const heldReal = useApp((s) => heldQty(s.orders, instrument.symbol));
 
   const view = useMemo(() => {
     if (!last) return [];
@@ -34,7 +37,7 @@ export function StockDetail({ instrument }: { instrument: Instrument }) {
   }, [points, last, range]);
 
   if (!last || !prev) {
-    return (<><DetailHeader back="/stocks" /><div className="mx-5 h-64 animate-pulse rounded-2xl bg-surface" /></>);
+    return (<><DetailHeader back="/stocks" symbol={instrument.symbol} /><div className="mx-5 h-64 animate-pulse rounded-2xl bg-surface" /></>);
   }
   const change = last.close - prev.close;
   const yr = rangeOver(points, 365);
@@ -43,7 +46,7 @@ export function StockDetail({ instrument }: { instrument: Instrument }) {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <DetailHeader back="/stocks" />
+      <DetailHeader back="/stocks" symbol={instrument.symbol} />
       <main className="flex flex-1 flex-col gap-3.5 px-5 pb-28">
         <div className="flex items-center gap-3">
           <Monogram i={instrument} size="size-10" />
@@ -84,18 +87,25 @@ export function StockDetail({ instrument }: { instrument: Instrument }) {
             Single stocks swing more than funds. {instrument.short} is {oneYear >= 0 ? "up" : "down"} {Math.abs(oneYear).toFixed(1)}% over the past year. Try a practice buy first and watch how it moves.
           </BeginnerTip>
         )}
-        {trade.notice}
-        {note && <p role="status" className="text-center text-[13px] text-muted-ink">Real orders are out of scope in this concept. Try a practice buy.</p>}
+        {heldReal > 0 && (
+          <div className="flex items-center justify-between rounded-[14px] border border-line px-3.5 py-3 text-sm">
+            <span>You hold <b>{heldReal}</b> {heldReal === 1 ? "share" : "shares"} (demo)</span>
+            <button type="button" onClick={() => real.openSheet("sell")} className="font-bold text-loss">Sell</button>
+          </div>
+        )}
+        {practice.notice}
+        {real.notice}
       </main>
 
       <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto grid max-w-[430px] grid-cols-2 gap-2.5 border-t border-line bg-white px-5 pb-[22px] pt-3">
-        <button type="button" onClick={trade.openSheet}
+        <button type="button" onClick={() => practice.openSheet()}
           className="flex h-[52px] flex-col items-center justify-center rounded-[14px] border-[1.5px] border-groww text-groww">
           <b className="text-[15px]">Practice buy</b><span className="text-[11px] text-[#3D4050]">Virtual ₹10,000</span>
         </button>
-        <button type="button" onClick={() => setNote(true)} className="h-[52px] rounded-[14px] bg-groww text-base font-bold text-white">Buy</button>
+        <button type="button" onClick={() => real.openSheet()} className="h-[52px] rounded-[14px] bg-groww text-base font-bold text-white">Buy</button>
       </footer>
-      {trade.sheet}
+      {practice.sheet}
+      {real.sheet}
     </div>
   );
 }
