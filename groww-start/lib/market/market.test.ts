@@ -42,6 +42,12 @@ describe("getHistory", () => {
     const r = await getHistory("TCS.NS", { ...ok, fetchLive: async () => [] });
     expect(r.source).toBe("snapshot");
   });
+  it("in frozen mode reads the snapshot without calling upstream", async () => {
+    let calls = 0;
+    const r = await getHistory("TCS.NS", { live: false, fetchLive: async () => { calls++; return []; }, readSnapshot: async () => snap });
+    expect(r).toEqual({ symbol: "TCS.NS", points: snap, source: "snapshot" });
+    expect(calls).toBe(0);
+  });
   it("rejects unknown symbols", async () => {
     await expect(getHistory("EVIL", ok)).rejects.toBeInstanceOf(UnknownSymbolError);
   });

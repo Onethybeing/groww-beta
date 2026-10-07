@@ -90,7 +90,7 @@ export function TimeMachine({ initialSymbol = "MF120716" }: { initialSymbol?: st
           </div>
           <p className="rounded-xl bg-surface p-3 text-sm leading-[1.5] text-[#3D4050]">{takeaway(result)}</p>
           <span className="text-xs text-muted-ink">
-            Real past {run.symbol.startsWith("MF") ? "NAVs from AMFI via mfapi.in" : "prices"}{data?.source === "snapshot" ? " (showing saved prices)" : ""}. Past performance doesn&apos;t guarantee future returns.
+            Real past {run.symbol.startsWith("MF") ? "NAVs from AMFI via mfapi.in" : "prices"}, as of {formatDate(result.series[result.series.length - 1].date)}. Past performance doesn&apos;t guarantee future returns.
           </span>
         </section>
       )}

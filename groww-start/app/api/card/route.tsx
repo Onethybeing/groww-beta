@@ -3,6 +3,7 @@ import path from "node:path";
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import { cardLines, parseShareParams } from "@/lib/share";
+import { GROW_WAVE_PATH } from "@/components/brand/grow-logo";
 
 const font = (w: 400 | 700 | 800) => readFile(path.join(process.cwd(), "assets", "fonts", `dm-sans-${w}.woff`));
 
@@ -21,7 +22,8 @@ export async function GET(req: NextRequest) {
         <div style={{ display: "flex", alignItems: "center", fontSize: 64, fontWeight: 800, letterSpacing: 3 }}>
           <svg width="84" height="84" viewBox="0 0 32 32" style={{ marginRight: 24 }}>
             <circle cx="16" cy="16" r="16" fill="#FFFFFF" />
-            <path d="M5 20.5c3.2 0 4.6-5.5 8-5.5s4 3.5 7 3.5 4.4-6 7-8" fill="none" stroke="#0B7A55" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="27" cy="10.5" r="2.2" fill="#7BE0BC" />
+            <path d={GROW_WAVE_PATH} fill="none" stroke="#0B7A55" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           GROW
           <div style={{ display: "flex", fontSize: 30, fontWeight: 700, marginLeft: 20, padding: "6px 18px", borderRadius: 999, background: "#138A63", letterSpacing: 1 }}>BETA</div>
@@ -41,7 +43,10 @@ export async function GET(req: NextRequest) {
             ))}
           </div>
         </div>
-        <div style={{ display: "flex", fontSize: 38, color: "#BFF0DE" }}>Learning → Practising → Investing · GROW Beta concept</div>
+        <div style={{ display: "flex", flexDirection: "column", fontSize: 34, color: "#BFF0DE" }}>
+          <div style={{ display: "flex" }}>Learning → Practising → Investing</div>
+          <div style={{ display: "flex", fontSize: 28, marginTop: 10, opacity: 0.85 }}>GROW Beta concept demo · not affiliated with Groww · demo money</div>
+        </div>
       </div>
     ),
     {

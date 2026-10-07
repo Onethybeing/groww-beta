@@ -82,7 +82,7 @@ export default function Home() {
         </section>
         <p data-testid="disclaimer" className="border-t border-line pt-3 text-center text-[11px] leading-[1.5] text-muted-ink">
           GROW Beta is a concept demo inspired by Groww · not affiliated with Groww · demo money only.<br />
-          Prices are real past data as of 7 Oct 2026 · not investment advice.
+          Prices are real past data (stocks to 7 Oct 2026, fund NAVs to 6 Oct 2026) · not investment advice.
         </p>
       </div>
       <WelcomeSheet />

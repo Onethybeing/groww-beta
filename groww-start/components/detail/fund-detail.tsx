@@ -94,7 +94,7 @@ export function FundDetail({ instrument }: { instrument: Instrument }) {
           </Link>
         )}
         {trade.notice}
-        <p className="text-xs text-muted-ink">Real past NAVs from AMFI via mfapi.in{data?.source === "snapshot" ? " (saved prices)" : ""}. Past performance doesn&apos;t guarantee future returns.</p>
+        <p className="text-xs text-muted-ink">Real past NAVs from AMFI via mfapi.in, as of {formatDate(last.date)}. Past performance doesn&apos;t guarantee future returns.</p>
       </main>
 
       <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto grid max-w-[430px] grid-cols-2 gap-2.5 border-t border-line bg-white px-5 pb-[22px] pt-3">
