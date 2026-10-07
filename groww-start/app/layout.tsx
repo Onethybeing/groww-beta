@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
+import { Providers } from "./providers";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -14,7 +15,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-IN">
       <body className={`${dmSans.variable} font-sans bg-neutral-100 text-ink antialiased`}>
-        <div className="mx-auto min-h-dvh max-w-[430px] bg-white shadow-sm">{children}</div>
+        <Providers>
+          <div className="mx-auto min-h-dvh max-w-[430px] bg-white shadow-sm">{children}</div>
+        </Providers>
       </body>
     </html>
   );
