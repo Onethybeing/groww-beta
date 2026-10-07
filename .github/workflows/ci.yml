@@ -16,7 +16,7 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: groww-start/package-lock.json
-      - run: npm ci
+      - run: npm install --no-audit --no-fund
       - run: npx eslint .
       - run: npx tsc --noEmit
       - run: npx vitest run
