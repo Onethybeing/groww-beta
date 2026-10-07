@@ -1,0 +1,10 @@
+{
+  "id": "index-funds", "order": 2, "title": "Index funds & the Nifty 50", "minutes": 2,
+  "cards": [
+    { "type": "text", "icon": "BarChart3", "title": "The Nifty 50 is India's top-50 scoreboard", "body": "It tracks 50 of the biggest companies on the NSE, like Reliance, HDFC Bank and Infosys. When people say \"the market is up\", they often mean the Nifty." },
+    { "type": "text", "icon": "Copy", "title": "An [[index_fund|index fund]] simply copies it", "body": "No star manager picking stocks. The fund holds the same 50 companies in the same proportions. Simple, diversified, low-cost." },
+    { "type": "chart", "title": "The Nifty 50 over 5 years", "body": "Real past data. Notice the dips, and that it kept going. Past performance doesn't guarantee future returns.", "symbol": "^NSEI" },
+    { "type": "text", "icon": "Coins", "title": "A low [[expense_ratio|expense ratio]] means more stays with you", "body": "Index funds often charge around 0.1–0.3% a year, while many actively managed funds charge more. Small fees compound too." },
+    { "type": "quiz", "question": "What does a Nifty 50 index fund do?", "options": ["Picks the 50 stocks a manager likes most", "Holds the same 50 companies as the Nifty 50", "Guarantees Nifty-level returns"], "answer": 1, "explanation": "It mirrors the index. Returns follow the market and are never guaranteed." }
+  ]
+}

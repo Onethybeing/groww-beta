@@ -1,0 +1,10 @@
+{
+  "id": "mutual-funds-sip", "order": 1, "title": "What's a mutual fund & SIP?", "minutes": 2,
+  "cards": [
+    { "type": "text", "icon": "Layers", "title": "A mutual fund is a shared basket", "body": "Lakhs of people pool their money. A professional manager buys many stocks or bonds with it. You own a slice of the whole basket, not one company." },
+    { "type": "text", "icon": "Tag", "title": "The price of a slice is its [[nav|NAV]]", "body": "If NAV is ₹50 and you invest ₹100, you get 2 units. A higher NAV doesn't mean \"expensive\". It's just the price of one slice." },
+    { "type": "text", "icon": "Repeat", "title": "A [[sip|SIP]] is investing on autopilot", "body": "Pick an amount, like ₹100, and a date. It gets invested every month. No timing the market, no daily decisions." },
+    { "type": "text", "icon": "Scale", "title": "Why SIPs suit beginners", "body": "When prices fall, your ₹100 buys more units. When they rise, fewer. Over time this averages out your cost. It's called rupee cost averaging." },
+    { "type": "quiz", "question": "NAV is ₹25 and your SIP is ₹100. How many units do you get?", "options": ["2 units", "4 units", "25 units"], "answer": 1, "explanation": "₹100 ÷ ₹25 = 4 units. Next month's NAV decides next month's units. When the NAV drops, the same ₹100 buys you more." }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "ups-and-downs", "order": 3, "title": "Ups and downs are normal", "minutes": 2,
+  "cards": [
+    { "type": "text", "icon": "Waves", "title": "Markets move in waves", "body": "Even strong markets fall 10–20% sometimes. In March 2020 the Nifty fell about 38% in a few weeks, then got back above its old high by the end of that year." },
+    { "type": "text", "icon": "Hourglass", "title": "Time is your superpower", "body": "Money you won't need for 5+ years can ride out dips. Money for next month's rent shouldn't be in stocks." },
+    { "type": "text", "icon": "Repeat", "title": "Dips can actually help a SIP", "body": "Your fixed amount buys more units when prices are low. That's why stopping a SIP during a fall often hurts more than the fall itself." },
+    { "type": "text", "icon": "Ban", "title": "No one can predict the market", "body": "Not finfluencers, not apps, not us. Be wary of anyone promising guaranteed or \"sure-shot\" [[returns|returns]]." },
+    { "type": "quiz", "question": "Your SIP is down 8% this month and you need the money in 6 years. What's sensible?", "options": ["Stop the SIP and sell", "Keep the SIP going", "Move everything into one hot stock"], "answer": 1, "explanation": "With a long horizon, short dips are normal. Staying consistent is what builds wealth." }
+  ]
+}
