@@ -7,8 +7,7 @@ import { GoalRing } from "@/components/goal-ring";
 import { MilestoneIcon } from "@/components/milestone-icon";
 import { useShareHref } from "@/components/milestone-toast";
 import { instrumentHref } from "@/components/instrument-row";
-import { totalFreezesOf, useApp, useToday } from "@/lib/store";
-import { computeStreak } from "@/lib/engine/streak";
+import { streakFor, totalFreezesOf, useApp, useToday } from "@/lib/store";
 import { useHistories, useQuotes } from "@/lib/market/client";
 import { getInstrument } from "@/lib/market/instruments";
 import { valueInstalments } from "@/lib/engine/instalments";
@@ -39,7 +38,8 @@ function Pnl({ value }: { value: number }) {
 }
 
 export default function HoldingsPage() {
-  const { sips, instalments, goal, milestones, answers, wallet, orders, addMoney } = useApp();
+  const state = useApp();
+  const { sips, instalments, goal, milestones, answers, wallet, orders, addMoney } = state;
   const today = useToday();
 
   const orderSymbols = useMemo(() => [...new Set(orders.map((o) => o.symbol))], [orders]);
@@ -59,8 +59,8 @@ export default function HoldingsPage() {
   const pnl = value - invested;
 
   const active = sips.filter((s) => s.status === "active");
-  const freezes = useApp(totalFreezesOf);
-  const streak = computeStreak(instalments.map((i) => i.date), today, freezes);
+  const freezes = totalFreezesOf(state);
+  const streak = streakFor(state, today);
   const freezesLeft = freezes - streak.freezesUsed;
   const nextSip = active.map((s) => nextSipDate(s, instalments, today)).sort()[0];
   const earned = MILESTONE_ORDER.filter((k) => milestones[k]).sort((a, b) => (milestones[b]! > milestones[a]! ? 1 : -1));

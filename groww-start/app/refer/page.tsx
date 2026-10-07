@@ -1,25 +1,30 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Copy, Gift, Share2, Snowflake, UserPlus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
-import { totalFreezesOf, useApp } from "@/lib/store";
-import { MAX_REFERRAL_FREEZES } from "@/lib/engine/referrals";
+import { myCodeOf, totalFreezesOf, useApp } from "@/lib/store";
+import { MAX_REFERRAL_FREEZES, referralFreezes } from "@/lib/engine/referrals";
 import { formatDate } from "@/lib/format";
 
 export default function ReferPage() {
-  const code = useApp((s) => s.myCode());
+  const code = useApp(myCodeOf);
   const referrals = useApp((s) => s.referrals);
+  const joinedViaInvite = useApp((s) => s.referredBy !== null);
   const freezes = useApp(totalFreezesOf);
-  const simulate = useApp((s) => s.simulateFriendJoined);
   const [copied, setCopied] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
   const link = typeof window === "undefined" ? `/r/${code}` : `${window.location.origin}/r/${code}`;
-  const capped = referrals.length >= MAX_REFERRAL_FREEZES;
+  const capped = referralFreezes(referrals.length, joinedViaInvite) >= MAX_REFERRAL_FREEZES;
+  /** Friend i earned a freeze only while under the cap. */
+  const earned = (i: number) => referralFreezes(i + 1, joinedViaInvite) > referralFreezes(i, joinedViaInvite);
 
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(link);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => setCopied(false), 2000);
     } catch {
       setCopied(false);
     }
@@ -55,25 +60,22 @@ export default function ReferPage() {
           <Snowflake className="size-7 text-[#2457C5]" aria-hidden />
           <div className="flex flex-col">
             <b data-testid="freeze-total" className="text-base">{freezes} streak freeze{freezes === 1 ? "" : "s"}</b>
-            <span className="text-xs text-[#3D4050]">1 for everyone + 1 per friend who joins (up to {MAX_REFERRAL_FREEZES} from invites)</span>
+            <span className="text-xs text-[#3D4050]">1 for everyone + 1 per friend who joins + 1 if you joined via an invite (up to {MAX_REFERRAL_FREEZES} from invites)</span>
           </div>
         </section>
 
         <section className="flex flex-col">
           <h2 className="mb-1 text-[15px] font-bold">Friends who joined ({referrals.length})</h2>
           {referrals.length === 0 && <p className="py-1 text-sm text-muted-ink">No one yet. Share your link to get started.</p>}
-          {referrals.map((r) => (
+          {referrals.map((r, i) => (
             <div key={r.name} data-testid="friend-row" className="flex min-h-12 items-center justify-between border-b border-[#F1F2F4] text-sm">
               <span className="flex items-center gap-2"><UserPlus className="size-4 text-groww" aria-hidden />{r.name}</span>
-              <span className="text-muted-ink">{formatDate(r.joinedAt)} · +1 freeze</span>
+              <span className="text-muted-ink">{formatDate(r.joinedAt)} · {earned(i) ? "+1 freeze" : "limit reached"}</span>
             </div>
           ))}
           {capped && <p className="mt-2 text-xs text-muted-ink">You&apos;ve reached the invite reward limit. Thanks for spreading the habit!</p>}
         </section>
 
-        <button type="button" onClick={simulate} className="h-11 rounded-[14px] border border-dashed border-line text-sm font-semibold text-muted-ink">
-          Simulate a friend joining (demo)
-        </button>
       </div>
     </>
   );

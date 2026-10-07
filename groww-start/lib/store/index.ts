@@ -11,7 +11,7 @@ import { computeStreak as streakOf, type StreakResult } from "@/lib/engine/strea
 import { isValidCode, normaliseCode, referralCode, referralFreezes } from "@/lib/engine/referrals";
 
 export const STORE_KEY = "groww-genz";
-export const STORE_VERSION = 2;
+export const STORE_VERSION = 3;
 /** Practice (virtual) money. */
 export const START_CASH = 10000;
 /** Real-demo balance used for Buy/Sell and SIPs. */
@@ -56,6 +56,11 @@ export interface AppData {
 export const BASE_FREEZES = 1;
 export const totalFreezesOf = (s: Pick<AppData, "referrals" | "referredBy">) =>
   BASE_FREEZES + referralFreezes(s.referrals.length, s.referredBy !== null);
+export const myCodeOf = (s: Pick<AppData, "userId">) => referralCode(s.userId);
+/** The one place the SIP streak (with all earned freezes) is computed. */
+export const streakFor = (s: Pick<AppData, "instalments" | "referrals" | "referredBy">, today: string): StreakResult =>
+  streakOf(s.instalments.map((i) => i.date), today, totalFreezesOf(s));
+export const MAX_DEMO_FRIENDS = 5;
 
 export type WelcomeAnswers = Pick<Answers, "goal" | "experience" | "budget" | "horizon">;
 type OrderInput = { symbol: string; side: "buy" | "sell"; qty: number; price: number };
@@ -79,12 +84,12 @@ export interface AppActions {
   updateSip(id: string, patch: SipPatch): Result;
   advanceMonth(skipSip: boolean): void;
   applyPreset(id: PersonaId): void;
-  myCode(): string;
+  /** Invites are for new investors only (no SIPs or orders yet). */
   acceptReferral(code: string): Result;
   /** Demo control: pretend a friend joined with your code. */
   simulateFriendJoined(): void;
-  totalFreezes(): number;
-  streakNow(): StreakResult;
+  /** Writes the generated user id to storage so the invite code stays stable across reloads. */
+  persistIdentity(): void;
   dismissMilestone(): void;
   reset(): void;
 }
@@ -111,7 +116,7 @@ function settle(s: AppData): Partial<AppData> {
     timeMachineRuns: s.timeMachineRuns,
     mockBuys: s.transactions.filter((t) => t.side === "buy").length,
     instalments: s.instalments.length,
-    streak: streakOf(s.instalments.map((i) => i.date), today, totalFreezesOf(s)).current,
+    streak: streakFor(s, today).current,
   }, s.milestones, today);
   const keys = Object.keys(fresh) as MilestoneKey[];
   if (keys.length === 0) return {};
@@ -205,21 +210,22 @@ export const useApp = create<AppState>()(
           });
         },
         applyPreset: (id) => update({ answers: PRESET_ANSWERS[id], goal: GOAL_DEFAULTS[PRESET_ANSWERS[id].goal], welcomeSeen: true, hintsOn: true }),
-        myCode: () => referralCode(get().userId),
         acceptReferral: (code) => {
           const c = normaliseCode(code);
+          const s = get();
           if (!isValidCode(c)) return { ok: false, error: "That invite code isn't valid" };
-          if (c === referralCode(get().userId)) return { ok: false, error: "That's your own invite code" };
-          if (get().referredBy) return { ok: false, error: "You've already joined with an invite" };
+          if (c === referralCode(s.userId)) return { ok: false, error: "That's your own invite code" };
+          if (s.referredBy) return { ok: false, error: "You've already joined with an invite" };
+          if (s.instalments.length > 0 || s.orders.length > 0) return { ok: false, error: "Invites are for new investors only" };
           update({ referredBy: c });
           return { ok: true };
         },
         simulateFriendJoined: () => {
           const r = get().referrals;
+          if (r.length >= MAX_DEMO_FRIENDS) return;
           update({ referrals: [...r, { name: `Friend ${r.length + 1}`, joinedAt: today() }] });
         },
-        totalFreezes: () => totalFreezesOf(get()),
-        streakNow: () => streakOf(get().instalments.map((i) => i.date), today(), totalFreezesOf(get())),
+        persistIdentity: () => set({ userId: get().userId }),
         dismissMilestone: () => set({ newMilestone: null }),
         reset: () => set({ ...initialData, userId: newUserId() }),
       };
@@ -228,8 +234,13 @@ export const useApp = create<AppState>()(
       name: STORE_KEY,
       version: STORE_VERSION,
       storage: createJSONStorage(() => localStorage),
-      migrate: (persisted, version) =>
-        (version === 1 && persisted && typeof persisted === "object" ? migrateV1(persisted as Record<string, unknown>) : { ...initialData, userId: newUserId() }) as AppState,
+      migrate: (persisted, version) => {
+        const old = persisted && typeof persisted === "object" ? (persisted as Record<string, unknown>) : null;
+        if (old && version === 1) return migrateV1(old) as AppState;
+        if (old && version === 2) return { ...initialData, ...old, userId: typeof old.userId === "string" ? old.userId : newUserId() } as AppState;
+        return { ...initialData, userId: newUserId() } as AppState;
+      },
+      onRehydrateStorage: () => (state) => state?.persistIdentity(),
     },
   ),
 );

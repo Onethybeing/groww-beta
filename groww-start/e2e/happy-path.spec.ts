@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("Groww flow with beginner features: hints → explainer → practice buy → SIP → habit → share", async ({ page }) => {
+test("Groww flow with beginner features: hints → explainer → practice buy → SIP → habit → share", async ({ page, browser, baseURL }) => {
   // New user: optional hints prompt on Home
   await page.goto("/");
   await expect(page.getByTestId("welcome-sheet")).toBeVisible();
@@ -73,10 +73,19 @@ test("Groww flow with beginner features: hints → explainer → practice buy �
   await page.getByRole("link", { name: /invite friends/i }).click();
   await expect(page.getByTestId("my-code")).toHaveText(/^GROW-[A-Z2-9]{4}$/);
   await expect(page.getByTestId("freeze-total")).toHaveText("1 streak freeze");
-  await page.getByRole("button", { name: /simulate a friend joining/i }).click();
+  await page.goto("/refer?demo=1");
+  await page.getByRole("button", { name: /friend joined/i }).click();
+  await page.getByRole("button", { name: /close demo controls/i }).click();
   await expect(page.getByTestId("friend-row")).toHaveCount(1);
   await expect(page.getByTestId("freeze-total")).toHaveText("2 streak freezes");
+  // Existing investors can't claim invites; a brand-new user can
   await page.goto("/r/GROW-AB2C");
   await page.getByTestId("accept-invite").click();
-  await expect(page.getByText("Invite accepted")).toBeVisible();
+  await expect(page.getByText("Invites are for new investors only")).toBeVisible();
+  const fresh = await browser.newContext({ baseURL, viewport: { width: 390, height: 844 } });
+  const newbie = await fresh.newPage();
+  await newbie.goto("/r/GROW-AB2C");
+  await newbie.getByTestId("accept-invite").click();
+  await expect(newbie.getByText("Invite accepted")).toBeVisible();
+  await fresh.close();
 });
