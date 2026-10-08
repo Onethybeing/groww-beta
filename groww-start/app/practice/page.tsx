@@ -1,5 +1,6 @@
 "use client";
 import { SavedData } from "@/components/saved-data";
+import { TwoCol } from "@/components/two-col";
 import Link from "next/link";
 import { useMemo } from "react";
 import { Check, ChevronRight, Clock, Sprout } from "lucide-react";
@@ -36,6 +37,7 @@ function PracticePageBody() {
         <span className="rounded-full bg-warn px-2.5 py-[5px] text-xs font-semibold text-warn-ink">Virtual money · Prices delayed</span>
       </header>
       <div className="flex flex-col gap-4 px-5 pb-4 pt-1">
+        <TwoCol left={<>
         <section className="flex flex-col gap-3 rounded-[18px] bg-inverse p-4 text-on-inverse">
           <span className="text-[13px] text-on-inverse-muted">Virtual portfolio</span>
           <b data-testid="virtual-total" className="text-[28px]">{formatINR(cash + value, 2)}</b>
@@ -61,6 +63,7 @@ function PracticePageBody() {
           <Link href="/stocks" className="flex min-h-11 items-center text-sm font-bold text-groww">+ Practise with any stock or fund</Link>
         </section>
 
+        </>} right={<>
         {practised && !hasSip && (
           <Link href={starterSipHref(answers)} data-testid="go-real"
             className="flex items-center gap-3 rounded-2xl bg-brand-surface p-4 text-white">
@@ -93,6 +96,7 @@ function PracticePageBody() {
             </Link>
           ))}
         </section>
+        </>} />
       </div>
     </>
   );

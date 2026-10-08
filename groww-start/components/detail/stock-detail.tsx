@@ -47,7 +47,8 @@ export function StockDetail({ instrument }: { instrument: Instrument }) {
   return (
     <div className="flex min-h-dvh flex-col">
       <DetailHeader back="/stocks" symbol={instrument.symbol} />
-      <main className="flex flex-1 flex-col gap-3.5 px-5 pb-28">
+      <div className="flex flex-1 flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-8">
+      <main className="flex flex-1 flex-col gap-3.5 px-5 pb-28 lg:pb-10">
         <div className="flex items-center gap-3">
           <Monogram i={instrument} size="size-10" />
           <div className="flex flex-col">
@@ -97,13 +98,14 @@ export function StockDetail({ instrument }: { instrument: Instrument }) {
         {real.notice}
       </main>
 
-      <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto grid max-w-[430px] grid-cols-2 gap-2.5 border-t border-line bg-card px-5 pb-[22px] pt-3">
+      <aside data-testid="order-panel" aria-label="Order" className="fixed inset-x-0 bottom-0 z-20 mx-auto grid max-w-[430px] grid-cols-2 gap-2.5 border-t border-line bg-card px-5 pb-[22px] pt-3 lg:sticky lg:top-6 lg:bottom-auto lg:mx-0 lg:mt-4 lg:max-w-none lg:grid-cols-1 lg:rounded-2xl lg:border lg:p-4">
         <button type="button" onClick={() => practice.openSheet()}
           className="flex h-[52px] flex-col items-center justify-center rounded-[14px] border-[1.5px] border-groww text-groww">
           <b className="text-[15px]">Practice buy</b><span className="text-[11px] text-ink-2">Virtual ₹10,000</span>
         </button>
         <button type="button" onClick={() => real.openSheet()} className="h-[52px] rounded-[14px] bg-brand-surface text-base font-bold text-white">Buy</button>
-      </footer>
+      </aside>
+      </div>
       {practice.sheet}
       {real.sheet}
     </div>

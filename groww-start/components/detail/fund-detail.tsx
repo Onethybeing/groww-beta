@@ -53,7 +53,8 @@ export function FundDetail({ instrument }: { instrument: Instrument }) {
   return (
     <div className="flex min-h-dvh flex-col">
       <DetailHeader back="/funds" symbol={instrument.symbol} />
-      <main className="flex flex-1 flex-col gap-3.5 px-5 pb-28">
+      <div className="flex flex-1 flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-8">
+      <main className="flex flex-1 flex-col gap-3.5 px-5 pb-28 lg:pb-10">
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-bold leading-[1.25]">{instrument.name}</h1>
           <span className="text-[13px] text-muted-ink">Direct · Growth · {CATEGORY[instrument.category ?? ""] ?? "Fund"}</span>
@@ -108,13 +109,14 @@ export function FundDetail({ instrument }: { instrument: Instrument }) {
         <p className="text-xs text-muted-ink">Real past NAVs from AMFI via mfapi.in, as of {formatDate(last.date)}. Past performance doesn&apos;t guarantee future returns.</p>
       </main>
 
-      <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto grid max-w-[430px] grid-cols-2 gap-2.5 border-t border-line bg-card px-5 pb-[22px] pt-3">
+      <aside data-testid="order-panel" aria-label="Order" className="fixed inset-x-0 bottom-0 z-20 mx-auto grid max-w-[430px] grid-cols-2 gap-2.5 border-t border-line bg-card px-5 pb-[22px] pt-3 lg:sticky lg:top-6 lg:bottom-auto lg:mx-0 lg:mt-4 lg:max-w-none lg:grid-cols-1 lg:rounded-2xl lg:border lg:p-4">
         <button type="button" onClick={() => trade.openSheet()}
           className="flex h-[52px] flex-col items-center justify-center rounded-[14px] border-[1.5px] border-groww text-groww">
           <b className="text-[15px]">Try with virtual ₹</b><span className="text-[11px] text-ink-2">No real money</span>
         </button>
         <Link href={`/funds/${instrument.symbol}/sip`} className="flex h-[52px] items-center justify-center rounded-[14px] bg-brand-surface text-base font-bold text-white">Start SIP</Link>
-      </footer>
+      </aside>
+      </div>
       {trade.sheet}
       {real.sheet}
     </div>

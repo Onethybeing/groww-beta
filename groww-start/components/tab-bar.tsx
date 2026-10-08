@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Briefcase, FlaskConical, Home, Layers, TrendingUp } from "lucide-react";
 
-const TABS = [
+export const TABS = [
   { href: "/", label: "Home", Icon: Home },
   { href: "/stocks", label: "Stocks", Icon: TrendingUp },
   { href: "/funds", label: "Mutual Funds", Icon: Layers },
@@ -17,7 +17,7 @@ export const TAB_PATHS = TABS.map((t) => t.href);
 export function TabBar() {
   const pathname = usePathname();
   return (
-    <nav aria-label="Primary" className="fixed inset-x-0 bottom-0 z-30 mx-auto grid max-w-[430px] grid-cols-5 border-t border-line bg-card px-1 pb-3.5 pt-2">
+    <nav aria-label="Primary" className="fixed inset-x-0 bottom-0 z-30 mx-auto grid max-w-[430px] grid-cols-5 lg:hidden border-t border-line bg-card px-1 pb-3.5 pt-2">
       {TABS.map(({ href, label, Icon, isNew }) => {
         const active = pathname === href;
         return (
