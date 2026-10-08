@@ -1,12 +1,13 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { usePathname } from "next/navigation";
 import { DemoPanel } from "./demo-panel";
 import { MilestoneToast } from "./milestone-toast";
 import { TabBar, TAB_PATHS } from "./tab-bar";
 import { useHydrated } from "@/lib/store/use-hydrated";
 import { useUi } from "@/lib/store/ui";
-import { useThemeSync } from "@/lib/store/prefs";
+import { usePrefs, useThemeSync } from "@/lib/store/prefs";
+import { useApp } from "@/lib/store";
 
 export function AppChrome({ children }: { children: React.ReactNode }) {
   const hydrated = useHydrated();
@@ -16,6 +17,13 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   const setDemoOpen = useUi((s) => s.setDemoOpen);
   const showTabs = TAB_PATHS.includes(pathname);
 
+  // Pages built from saved data wrap themselves in <SavedData>; the rest render straight from the server.
+  // Before the first paint after hydration, so saved data replaces defaults without a visible flash
+  useLayoutEffect(() => {
+    void useApp.persist.rehydrate();
+    void usePrefs.persist.rehydrate();
+  }, []);
+
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("demo") === "1") setDemoOpen(true);
   }, [setDemoOpen]);
@@ -23,7 +31,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div className={showTabs ? "pb-24" : ""}>
-        {hydrated ? children : <div className="p-6 text-sm text-muted-ink">Loading…</div>}
+        {children}
       </div>
       {hydrated && <MilestoneToast />}
       {showTabs && <TabBar />}

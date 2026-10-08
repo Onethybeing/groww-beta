@@ -50,6 +50,7 @@ export const usePrefs = create<Prefs>()(
       version: 1,
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => state?.persistId(),
+      skipHydration: true,
     },
   ),
 );
@@ -77,5 +78,7 @@ export function useResolvedTheme(): "light" | "dark" {
 export function useThemeSync(): void {
   const pref = usePrefs((s) => s.theme);
   const prefersDark = useSyncExternalStore(subscribe, () => mq()?.matches ?? false, () => false);
-  useEffect(() => applyTheme(pref), [pref, prefersDark]);
+  const ready = useSyncExternalStore((cb) => usePrefs.persist.onFinishHydration(cb), () => usePrefs.persist.hasHydrated(), () => false);
+  // Until the saved pref loads, the boot script's class is the truth; applying the default would undo it.
+  useEffect(() => { if (ready) applyTheme(pref); }, [ready, pref, prefersDark]);
 }

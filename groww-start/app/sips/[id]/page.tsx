@@ -1,4 +1,5 @@
 "use client";
+import { SavedData } from "@/components/saved-data";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -11,7 +12,7 @@ import { MIN_SIP } from "@/lib/engine/instalments";
 import { formatDate, formatINR, ordinal } from "@/lib/format";
 
 
-export default function ManageSipPage() {
+function ManageSipPageBody() {
   const { id } = useParams<{ id: string }>();
   const today = useToday();
   const { sips, instalments, missed, updateSip } = useApp();
@@ -93,4 +94,8 @@ export default function ManageSipPage() {
       </div>
     </>
   );
+}
+
+export default function ManageSipPage() {
+  return <SavedData><ManageSipPageBody /></SavedData>;
 }

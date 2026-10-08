@@ -22,7 +22,8 @@ describe("usePrefs", () => {
     expect(s.lang).toBe("en");
     expect(s.anonId.length).toBeGreaterThan(8);
   });
-  it("persists the anon id immediately so it is stable across reloads", async () => {
+  it("persists the anon id on first load so it is stable across reloads", async () => {
+    await mod.usePrefs.persist.rehydrate();
     const id = mod.usePrefs.getState().anonId;
     expect(JSON.parse(localStorage.getItem("grow-ui")!).state.anonId).toBe(id);
     await mod.usePrefs.persist.rehydrate();

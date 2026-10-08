@@ -7,7 +7,7 @@ import { useTrade } from "./practice-trade";
 import { useApp } from "@/lib/store";
 import { heldQty } from "@/lib/engine/portfolio";
 import { Explain } from "@/components/explain";
-import { PriceChart } from "@/components/charts/price-chart";
+import { PriceChart } from "@/components/charts/lazy";
 import { useHistory } from "@/lib/market/client";
 import { addDays } from "@/lib/engine/dates";
 import { trailingReturn } from "@/lib/engine/returns";

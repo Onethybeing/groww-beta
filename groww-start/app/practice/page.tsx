@@ -1,4 +1,5 @@
 "use client";
+import { SavedData } from "@/components/saved-data";
 import Link from "next/link";
 import { useMemo } from "react";
 import { Check, ChevronRight, Clock, Sprout } from "lucide-react";
@@ -12,7 +13,7 @@ import { holdings } from "@/lib/engine/portfolio";
 import { LESSONS } from "@/lib/content";
 import { formatINR, formatPct } from "@/lib/format";
 
-export default function PracticePage() {
+function PracticePageBody() {
   const cash = useApp((s) => s.cash);
   const txns = useApp((s) => s.transactions);
   const lessons = useApp((s) => s.lessons);
@@ -66,7 +67,7 @@ export default function PracticePage() {
             <Sprout className="size-7 flex-none" aria-hidden />
             <span className="flex flex-1 flex-col gap-0.5">
               <b className="text-[15px]">Ready to go real?</b>
-              <span className="text-[13px] text-white/85">You&apos;ve practised. Start a SIP from just {formatINR(MIN_SIP)} a month in a {starter.short} fund.</span>
+              <span className="text-[13px] text-white">You&apos;ve practised. Start a SIP from just {formatINR(MIN_SIP)} a month in a {starter.short} fund.</span>
             </span>
             <ChevronRight className="size-5" aria-hidden />
           </Link>
@@ -95,4 +96,8 @@ export default function PracticePage() {
       </div>
     </>
   );
+}
+
+export default function PracticePage() {
+  return <SavedData><PracticePageBody /></SavedData>;
 }

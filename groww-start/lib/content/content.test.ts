@@ -1,9 +1,14 @@
 import { describe, it, expect } from "vitest";
 import { LESSONS, getLesson, GLOSSARY, glossaryRefs } from "./index";
-import { LESSON_ICON_NAMES } from "./schema";
+import { LESSON_ICON_NAMES, LessonSchema, GlossarySchema } from "./schema";
+import glossaryJson from "@/content/glossary.json";
 import { getInstrument } from "@/lib/market/instruments";
 
 describe("content", () => {
+  it("every lesson and the glossary pass schema validation (validated here, not in the browser)", () => {
+    for (const l of LESSONS) expect(() => LessonSchema.parse(l)).not.toThrow();
+    expect(() => GlossarySchema.parse(glossaryJson)).not.toThrow();
+  });
   it("loads 3 lessons in order, each ending in a quiz", () => {
     expect(LESSONS.map((l) => l.id)).toEqual(["mutual-funds-sip", "index-funds", "ups-and-downs"]);
     for (const l of LESSONS) expect(l.cards[l.cards.length - 1].type).toBe("quiz");

@@ -6,7 +6,7 @@ import {
   Ban, BarChart3, Check, ChevronLeft, CircleCheck, Coins, Copy, Hourglass, Layers, Repeat, Scale, Tag, Waves, X,
 } from "lucide-react";
 import { RichText } from "./rich-text";
-import { PriceChart } from "@/components/charts/price-chart";
+import { ChartSkeleton, PriceChart } from "@/components/charts/lazy";
 import { useHistory } from "@/lib/market/client";
 import { useApp } from "@/lib/store";
 import { LESSONS, type Card, type Lesson, type LessonIconName } from "@/lib/content";
@@ -15,7 +15,7 @@ const ICONS: Record<LessonIconName, typeof Layers> = { Layers, Tag, Repeat, Scal
 
 function ChartCardView({ symbol }: { symbol: string }) {
   const { data } = useHistory(symbol);
-  return data ? <PriceChart points={data.points} /> : <div className="h-[180px] animate-pulse rounded-xl bg-surface" />;
+  return data ? <PriceChart points={data.points} /> : <ChartSkeleton height={180} />;
 }
 
 export function LessonPlayer({ lesson }: { lesson: Lesson }) {

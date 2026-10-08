@@ -1,4 +1,5 @@
 "use client";
+import { SavedData } from "@/components/saved-data";
 import { PageHeader } from "@/components/page-header";
 import { useApp } from "@/lib/store";
 import { getInstrument } from "@/lib/market/instruments";
@@ -6,7 +7,7 @@ import { formatDate, formatINR } from "@/lib/format";
 
 type Row = { key: string; date: string; title: string; detail: string; amount: number; tone: "buy" | "sell" | "sip" | "missed" };
 
-export default function OrdersPage() {
+function OrdersPageBody() {
   const { orders, instalments, missed, sips } = useApp();
   const name = (symbol: string) => getInstrument(symbol)?.name ?? symbol;
   const sipName = (id: string) => name(sips.find((s) => s.id === id)?.symbol ?? "");
@@ -39,4 +40,8 @@ export default function OrdersPage() {
       </div>
     </>
   );
+}
+
+export default function OrdersPage() {
+  return <SavedData><OrdersPageBody /></SavedData>;
 }

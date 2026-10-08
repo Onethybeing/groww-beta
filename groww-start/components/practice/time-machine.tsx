@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { SipChart } from "@/components/charts/sip-chart";
+import { SipChart } from "@/components/charts/lazy";
 import { ReflectionPrompt } from "@/components/reflection-prompt";
 import { useHistory } from "@/lib/market/client";
 import { INSTRUMENTS } from "@/lib/market/instruments";

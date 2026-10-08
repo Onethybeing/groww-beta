@@ -1,4 +1,5 @@
 "use client";
+import { SavedData } from "@/components/saved-data";
 import Link from "next/link";
 import { useMemo } from "react";
 import { ChevronRight, Flame, Plus, ReceiptText, Share, Wallet } from "lucide-react";
@@ -37,7 +38,7 @@ function Pnl({ value }: { value: number }) {
   return <span className={value > 0 ? "text-groww" : value < 0 ? "text-loss" : ""}>{value < 0 ? "−" : value > 0 ? "+" : ""}{formatINR(Math.abs(value), 2)}</span>;
 }
 
-export default function HoldingsPage() {
+function HoldingsPageBody() {
   const state = useApp();
   const { sips, instalments, goal, milestones, answers, wallet, orders, addMoney } = state;
   const today = useToday();
@@ -172,4 +173,8 @@ export default function HoldingsPage() {
       </div>
     </>
   );
+}
+
+export default function HoldingsPage() {
+  return <SavedData><HoldingsPageBody /></SavedData>;
 }
