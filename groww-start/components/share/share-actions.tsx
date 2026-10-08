@@ -31,10 +31,10 @@ export function ShareActions({ imgUrl, text }: { imgUrl: string; text: string })
   return (
     <div className="flex flex-col gap-2">
       <div className="grid grid-cols-2 gap-2.5">
-        <button type="button" onClick={share} className="flex h-[52px] items-center justify-center gap-2 rounded-[14px] bg-groww text-base font-bold text-white">
+        <button type="button" onClick={share} className="flex h-[52px] items-center justify-center gap-2 rounded-[14px] bg-brand-surface text-base font-bold text-white">
           <Share className="size-[18px]" aria-hidden />Share
         </button>
-        <button type="button" onClick={download} className="flex h-[52px] items-center justify-center gap-2 rounded-[14px] border-[1.5px] border-[#D5D8DE] bg-white text-base font-bold">
+        <button type="button" onClick={download} className="flex h-[52px] items-center justify-center gap-2 rounded-[14px] border-[1.5px] border-line bg-card text-base font-bold">
           <Download className="size-[18px]" aria-hidden />Download
         </button>
       </div>

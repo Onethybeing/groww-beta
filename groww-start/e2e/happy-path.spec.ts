@@ -89,3 +89,34 @@ test("Groww flow with beginner features: hints → explainer → practice buy �
   await expect(newbie.getByText("Invite accepted")).toBeVisible();
   await fresh.close();
 });
+
+test("dark mode applies before paint and has no hydration warning", async ({ page }) => {
+  const warnings: string[] = [];
+  page.on("console", (m) => { if (/hydrat/i.test(m.text())) warnings.push(m.text()); });
+  await page.addInitScript(() => {
+    if (!localStorage.getItem("grow-ui")) localStorage.setItem("grow-ui", JSON.stringify({ version: 1, state: { theme: "dark", lang: "en", anonId: "test-anon-id" } }));
+    localStorage.setItem("groww-genz", JSON.stringify({ version: 3, state: { welcomeSeen: true } }));
+  });
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  await page.reload();
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  await page.getByTestId("theme-toggle").click(); // dark → system
+  await page.getByTestId("theme-toggle").click(); // system → light
+  await expect(page.locator("html")).not.toHaveClass(/dark/);
+  expect(warnings).toEqual([]);
+});
+
+test("system preference + dark OS stays dark through hydration (no light flash)", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.addInitScript(() => localStorage.setItem("groww-genz", JSON.stringify({ version: 3, state: { welcomeSeen: true } })));
+  const seen: boolean[] = [];
+  await page.exposeFunction("recordDark", (d: boolean) => seen.push(d));
+  await page.addInitScript(() => {
+    new MutationObserver(() => (window as unknown as { recordDark: (d: boolean) => void }).recordDark(document.documentElement.classList.contains("dark")))
+      .observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  });
+  await page.goto("/", { waitUntil: "networkidle" });
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  expect(seen).not.toContain(false);
+});

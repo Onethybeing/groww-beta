@@ -26,7 +26,7 @@ export default function OrdersPage() {
         <p className="mb-2 text-xs text-muted-ink">Demo orders only. Nothing here touched real money.</p>
         {rows.length === 0 && <p className="py-4 text-sm text-muted-ink">No orders yet.</p>}
         {rows.map((r) => (
-          <div key={r.key} data-testid="order-row" className="flex min-h-16 items-center justify-between gap-3 border-b border-[#F1F2F4]">
+          <div key={r.key} data-testid="order-row" className="flex min-h-16 items-center justify-between gap-3 border-b border-line-soft">
             <span className="flex flex-col gap-0.5">
               <b className="text-[15px]">{r.title}</b>
               <span className={`text-xs ${r.tone === "missed" ? "text-loss" : "text-muted-ink"}`}>{r.detail} · {formatDate(r.date)}</span>

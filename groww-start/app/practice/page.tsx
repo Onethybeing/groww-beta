@@ -32,16 +32,16 @@ export default function PracticePage() {
     <>
       <header className="flex items-center justify-between px-5 pb-2.5 pt-4">
         <h1 className="text-[22px] font-bold">Practice</h1>
-        <span className="rounded-full bg-[#FFF4E0] px-2.5 py-[5px] text-xs font-semibold text-[#8A4B00]">Virtual money · Prices delayed</span>
+        <span className="rounded-full bg-warn px-2.5 py-[5px] text-xs font-semibold text-warn-ink">Virtual money · Prices delayed</span>
       </header>
       <div className="flex flex-col gap-4 px-5 pb-4 pt-1">
-        <section className="flex flex-col gap-3 rounded-[18px] bg-ink p-4 text-white">
-          <span className="text-[13px] text-[#B9BBC6]">Virtual portfolio</span>
+        <section className="flex flex-col gap-3 rounded-[18px] bg-inverse p-4 text-on-inverse">
+          <span className="text-[13px] text-on-inverse-muted">Virtual portfolio</span>
           <b data-testid="virtual-total" className="text-[28px]">{formatINR(cash + value, 2)}</b>
           <div className="grid grid-cols-3 gap-2.5 text-[13px]">
-            <div className="flex flex-col gap-0.5"><span className="text-[#B9BBC6]">Cash</span><b data-testid="cash">{formatINR(cash, 2)}</b></div>
-            <div className="flex flex-col gap-0.5"><span className="text-[#B9BBC6]">Invested</span><b>{formatINR(invested, 2)}</b></div>
-            <div className="flex flex-col gap-0.5"><span className="text-[#B9BBC6]">P&amp;L</span><b className={pnl >= 0 ? "text-[#7BE0BC]" : "text-[#FF9C8A]"}>{pnl >= 0 ? "+" : "−"}{formatINR(Math.abs(pnl), 2)}</b></div>
+            <div className="flex flex-col gap-0.5"><span className="text-on-inverse-muted">Cash</span><b data-testid="cash">{formatINR(cash, 2)}</b></div>
+            <div className="flex flex-col gap-0.5"><span className="text-on-inverse-muted">Invested</span><b>{formatINR(invested, 2)}</b></div>
+            <div className="flex flex-col gap-0.5"><span className="text-on-inverse-muted">P&amp;L</span><b className={pnl >= 0 ? "text-accent-soft" : "text-loss"}>{pnl >= 0 ? "+" : "−"}{formatINR(Math.abs(pnl), 2)}</b></div>
           </div>
         </section>
 
@@ -51,7 +51,7 @@ export default function PracticePage() {
           {hs.map((h) => {
             const i = getInstrument(h.symbol)!;
             return (
-              <Link key={h.symbol} href={instrumentHref(i)} data-testid={`holding-${h.symbol}`} className="flex min-h-14 items-center justify-between border-b border-[#F1F2F4]">
+              <Link key={h.symbol} href={instrumentHref(i)} data-testid={`holding-${h.symbol}`} className="flex min-h-14 items-center justify-between border-b border-line-soft">
                 <span className="flex flex-col"><b className="text-[15px]">{i.name}</b><span className="text-xs text-muted-ink">{h.qty} {i.kind === "fund" ? "units" : h.qty === 1 ? "share" : "shares"} · avg {formatINR(h.avgPrice, 2)}</span></span>
                 <span className="flex flex-col text-right"><b className="text-[15px]">{formatINR(h.value, 2)}</b><span className={`text-xs ${h.pnl >= 0 ? "text-groww" : "text-loss"}`}>{formatPct(h.pnlPct)}</span></span>
               </Link>
@@ -62,11 +62,11 @@ export default function PracticePage() {
 
         {practised && !hasSip && (
           <Link href={starterSipHref(answers)} data-testid="go-real"
-            className="flex items-center gap-3 rounded-2xl bg-groww p-4 text-white">
+            className="flex items-center gap-3 rounded-2xl bg-brand-surface p-4 text-white">
             <Sprout className="size-7 flex-none" aria-hidden />
             <span className="flex flex-1 flex-col gap-0.5">
               <b className="text-[15px]">Ready to go real?</b>
-              <span className="text-[13px] text-[#E3F7EF]">You&apos;ve practised. Start a SIP from just {formatINR(MIN_SIP)} a month in a {starter.short} fund.</span>
+              <span className="text-[13px] text-white/85">You&apos;ve practised. Start a SIP from just {formatINR(MIN_SIP)} a month in a {starter.short} fund.</span>
             </span>
             <ChevronRight className="size-5" aria-hidden />
           </Link>
@@ -75,7 +75,7 @@ export default function PracticePage() {
         <Link href="/practice/time-machine" className="flex items-center gap-3 rounded-2xl border border-line p-3.5">
           <span className="flex size-11 flex-none items-center justify-center rounded-xl bg-mint text-groww"><Clock className="size-[22px]" aria-hidden /></span>
           <span className="flex flex-1 flex-col gap-0.5"><b className="text-[15px]">Time Machine</b><span className="text-[13px] text-muted-ink">Replay a monthly SIP on real past prices</span></span>
-          <ChevronRight className="size-[18px] text-[#8A8D9B]" aria-hidden />
+          <ChevronRight className="size-[18px] text-faint" aria-hidden />
         </Link>
 
         <section className="flex flex-col gap-1">
@@ -85,7 +85,7 @@ export default function PracticePage() {
           </div>
           {LESSONS.map((l) => (
             <Link key={l.id} href={`/learn/${l.id}`} className="flex min-h-12 items-center gap-2.5">
-              <span className={`flex size-7 items-center justify-center rounded-full text-[13px] font-bold ${lessons[l.id] ? "bg-groww text-white" : "bg-mint text-groww"}`}>
+              <span className={`flex size-7 items-center justify-center rounded-full text-[13px] font-bold ${lessons[l.id] ? "bg-brand-surface text-white" : "bg-mint text-groww"}`}>
                 {lessons[l.id] ? <Check className="size-3.5" strokeWidth={3} aria-hidden /> : l.order}
               </span>
               <span className="flex-1 text-sm font-semibold">{l.title}</span>

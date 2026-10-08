@@ -42,9 +42,9 @@ export function WelcomeSheet() {
           You&apos;ll see short &ldquo;What&apos;s this?&rdquo; explainers, a Practice tab with virtual money, and small-amount SIP options. Turn hints off anytime.
         </SheetDescription>
         <div className="grid grid-cols-2 gap-2.5">
-          <button type="button" onClick={() => setWelcome(null)} className="h-[50px] rounded-[14px] border-[1.5px] border-[#D5D8DE] text-[15px] font-bold">Skip for now</button>
+          <button type="button" onClick={() => setWelcome(null)} className="h-[50px] rounded-[14px] border-[1.5px] border-line text-[15px] font-bold">Skip for now</button>
           <button type="button" disabled={!complete} onClick={() => setWelcome(answers as WelcomeAnswers)}
-            className="h-[50px] rounded-[14px] bg-groww text-[15px] font-bold text-white disabled:opacity-50">Turn on hints</button>
+            className="h-[50px] rounded-[14px] bg-brand-surface text-[15px] font-bold text-white disabled:opacity-50">Turn on hints</button>
         </div>
       </SheetContent>
     </Sheet>

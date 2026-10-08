@@ -41,7 +41,7 @@ export function SipOrder({ instrument, initialMode = "sip" }: { instrument: Inst
       </div>
     </header>
   );
-  const primary = "flex h-[52px] w-full items-center justify-center rounded-[14px] bg-groww text-base font-bold text-white disabled:opacity-50";
+  const primary = "flex h-[52px] w-full items-center justify-center rounded-[14px] bg-brand-surface text-base font-bold text-white disabled:opacity-50";
 
   if (done) {
     return (
@@ -49,7 +49,7 @@ export function SipOrder({ instrument, initialMode = "sip" }: { instrument: Inst
         {header}
         <div className="flex flex-1 flex-col items-center gap-4 px-6 py-10 text-center">
           <motion.span initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200 }}
-            className="flex size-20 items-center justify-center rounded-full bg-groww text-white"><Check className="size-10" strokeWidth={2.6} aria-hidden /></motion.span>
+            className="flex size-20 items-center justify-center rounded-full bg-brand-surface text-white"><Check className="size-10" strokeWidth={2.6} aria-hidden /></motion.span>
           <h2 className="text-2xl font-bold">{done.kind === "sip" ? "SIP started" : "Order placed"}</h2>
           <p className="text-[15px] text-muted-ink">
             {done.kind === "sip"
@@ -81,10 +81,10 @@ export function SipOrder({ instrument, initialMode = "sip" }: { instrument: Inst
     <div className="flex min-h-dvh flex-col">
       {header}
       <main className="flex flex-1 flex-col gap-[18px] px-5 py-4">
-        <div role="tablist" aria-label="Order type" className="grid grid-cols-2 gap-1 rounded-xl bg-[#F1F2F4] p-1">
+        <div role="tablist" aria-label="Order type" className="grid grid-cols-2 gap-1 rounded-xl bg-chip p-1">
           {(["sip", "lumpsum"] as const).map((m) => (
             <button key={m} role="tab" aria-selected={mode === m} onClick={() => { setMode(m); setError(null); }}
-              className={`h-10 rounded-[9px] text-sm ${mode === m ? "bg-white font-bold shadow-[0_1px_3px_rgba(27,29,41,0.1)]" : "font-semibold text-muted-ink"}`}>
+              className={`h-10 rounded-[9px] text-sm ${mode === m ? "bg-card font-bold shadow-[0_1px_3px_rgba(27,29,41,0.1)]" : "font-semibold text-muted-ink"}`}>
               {m === "sip" ? "Monthly SIP" : "One-time"}
             </button>
           ))}

@@ -44,10 +44,10 @@ export default function Home() {
 
         {hintsOn && (
           <Link href="/practice" data-testid="practice-banner" className="flex items-center gap-3 rounded-[14px] bg-mint px-3.5 py-3">
-            <span className="flex size-9 flex-none items-center justify-center rounded-[10px] bg-groww text-white"><FlaskConical className="size-5" aria-hidden /></span>
+            <span className="flex size-9 flex-none items-center justify-center rounded-[10px] bg-brand-surface text-white"><FlaskConical className="size-5" aria-hidden /></span>
             <span className="flex flex-1 flex-col gap-px">
               <b className="text-sm">New here? Try anything with ₹10,000 virtual money</b>
-              <span className="text-xs text-[#3D4050]">Beginner hints are on · Practice tab</span>
+              <span className="text-xs text-ink-2">Beginner hints are on · Practice tab</span>
             </span>
             <ChevronRight className="size-[18px] text-groww" aria-hidden />
           </Link>

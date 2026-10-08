@@ -6,9 +6,11 @@ import { MilestoneToast } from "./milestone-toast";
 import { TabBar, TAB_PATHS } from "./tab-bar";
 import { useHydrated } from "@/lib/store/use-hydrated";
 import { useUi } from "@/lib/store/ui";
+import { useThemeSync } from "@/lib/store/prefs";
 
 export function AppChrome({ children }: { children: React.ReactNode }) {
   const hydrated = useHydrated();
+  useThemeSync();
   const pathname = usePathname();
   const demoOpen = useUi((s) => s.demoOpen);
   const setDemoOpen = useUi((s) => s.setDemoOpen);

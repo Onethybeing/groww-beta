@@ -33,12 +33,12 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-4 px-6 text-center">
         <motion.span initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 220 }}
-          className="flex size-20 items-center justify-center rounded-full bg-groww text-white">
+          className="flex size-20 items-center justify-center rounded-full bg-brand-surface text-white">
           <Check className="size-10" strokeWidth={2.6} aria-hidden />
         </motion.span>
         <h1 className="text-2xl font-bold">Lesson complete</h1>
         <p className="text-[15px] text-muted-ink">Try it for real, risk-free: practise with ₹10,000 of virtual money.</p>
-        <Link href="/practice" className="flex h-[52px] w-full items-center justify-center rounded-[14px] bg-groww text-base font-bold text-white">Go to Practice</Link>
+        <Link href="/practice" className="flex h-[52px] w-full items-center justify-center rounded-[14px] bg-brand-surface text-base font-bold text-white">Go to Practice</Link>
         {nextLesson && (
           <Link href={`/learn/${nextLesson.id}`} className="flex h-12 w-full items-center justify-center text-[15px] font-semibold text-groww">Next lesson: {nextLesson.title}</Link>
         )}
@@ -58,7 +58,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           <span className="flex-1 text-sm font-semibold text-muted-ink">{lesson.title} · {lesson.minutes} min</span>
         </div>
         <div className="grid gap-1.5 px-1" style={{ gridTemplateColumns: `repeat(${lesson.cards.length}, minmax(0, 1fr))` }}>
-          {lesson.cards.map((_, k) => <div key={k} className={`h-[5px] rounded-full ${k <= i ? "bg-groww" : "bg-[#EEF0F2]"}`} />)}
+          {lesson.cards.map((_, k) => <div key={k} className={`h-[5px] rounded-full ${k <= i ? "bg-brand-surface" : "bg-chip"}`} />)}
         </div>
       </header>
 
@@ -78,7 +78,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
                     </div>
                   )}
                   <h2 className="text-2xl font-bold leading-[1.2] tracking-tight"><RichText text={card.title} /></h2>
-                  <p className="text-base leading-[1.55] text-[#3D4050]"><RichText text={card.body} /></p>
+                  <p className="text-base leading-[1.55] text-ink-2"><RichText text={card.body} /></p>
                 </>
               );
             })()}
@@ -99,7 +99,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
                     const style = picked === null
                       ? "border-[1.5px] border-line text-ink"
                       : correct ? "border-2 border-groww bg-mint font-bold text-ink"
-                      : k === picked ? "border-2 border-loss bg-[#FDECEA] text-ink" : "border-[1.5px] border-line text-[#8A8D9B]";
+                      : k === picked ? "border-2 border-loss bg-loss-soft text-ink" : "border-[1.5px] border-line text-faint";
                     return (
                       <button key={o} disabled={picked !== null} onClick={() => setPicked(k)}
                         className={`flex min-h-14 items-center justify-between rounded-[14px] px-4 text-left text-[17px] font-semibold ${style}`}>
@@ -112,7 +112,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
                 {picked !== null && (
                   <div className="flex flex-col gap-1.5 rounded-2xl bg-surface p-4">
                     <b className="text-[15px]">{picked === card.answer ? "Nice!" : "Not quite."}</b>
-                    <span className="text-sm leading-[1.5] text-[#3D4050]">{card.explanation}</span>
+                    <span className="text-sm leading-[1.5] text-ink-2">{card.explanation}</span>
                   </div>
                 )}
               </>
@@ -124,13 +124,13 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
       <footer className="flex flex-col gap-2.5 px-5 pb-[22px] pt-3">
         {!isLast ? (
-          <button onClick={next} disabled={!canAdvance} className="flex h-[52px] items-center justify-center rounded-[14px] bg-groww text-base font-bold text-white disabled:opacity-50">Next</button>
+          <button onClick={next} disabled={!canAdvance} className="flex h-[52px] items-center justify-center rounded-[14px] bg-brand-surface text-base font-bold text-white disabled:opacity-50">Next</button>
         ) : (
           <button disabled={!canAdvance} onClick={() => {
             const last = lesson.cards[lesson.cards.length - 1];
             completeLesson(lesson.id, last.type === "quiz" && picked === last.answer);
             setDone(true);
-          }} className="flex h-[52px] items-center justify-center rounded-[14px] bg-groww text-base font-bold text-white disabled:opacity-50">Finish lesson</button>
+          }} className="flex h-[52px] items-center justify-center rounded-[14px] bg-brand-surface text-base font-bold text-white disabled:opacity-50">Finish lesson</button>
         )}
       </footer>
     </div>

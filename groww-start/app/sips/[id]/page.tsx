@@ -31,7 +31,7 @@ export default function ManageSipPage() {
     const r = updateSip(sip.id, patch);
     setMsg(r.ok ? { ok: true, text } : { ok: false, text: r.error });
   };
-  const statusTone = sip.status === "active" ? "bg-mint text-groww" : sip.status === "paused" ? "bg-[#FFF4E0] text-[#8A4B00]" : "bg-[#F1F2F4] text-muted-ink";
+  const statusTone = sip.status === "active" ? "bg-mint text-groww" : sip.status === "paused" ? "bg-warn text-warn-ink" : "bg-chip text-muted-ink";
 
   return (
     <>
@@ -42,7 +42,7 @@ export default function ManageSipPage() {
             <b className="text-base">{fund?.name ?? sip.symbol}</b>
             <span data-testid="sip-status" className={`rounded-full px-2.5 py-1 text-xs font-bold capitalize ${statusTone}`}>{sip.status}</span>
           </div>
-          <span className="text-sm text-[#3D4050]">{formatINR(sip.amount)} on the {ordinal(sip.day)} of every month · since {formatDate(sip.startDate)}</span>
+          <span className="text-sm text-ink-2">{formatINR(sip.amount)} on the {ordinal(sip.day)} of every month · since {formatDate(sip.startDate)}</span>
           {sip.status === "active" && <span className="text-xs text-muted-ink">Next instalment: {formatDate(nextSipDate(sip, instalments, today))}</span>}
         </section>
 
@@ -55,7 +55,7 @@ export default function ManageSipPage() {
             </label>
             <DayPicker value={day} onChange={setDay} />
             <button type="button" onClick={() => run({ amount: Number(amount), day }, "SIP updated")}
-              className="h-12 rounded-[14px] bg-groww text-[15px] font-bold text-white">Save changes</button>
+              className="h-12 rounded-[14px] bg-brand-surface text-[15px] font-bold text-white">Save changes</button>
             <span className="text-xs text-muted-ink">Minimum {formatINR(MIN_SIP)}. Changes apply from the next instalment.</span>
           </section>
         )}
@@ -73,7 +73,7 @@ export default function ManageSipPage() {
             )}
             {confirmCancel ? (
               <button type="button" onClick={() => { run({ status: "cancelled" }, "SIP cancelled. Units you already own stay in Holdings."); setConfirmCancel(false); }}
-                className="h-12 rounded-[14px] bg-loss text-[15px] font-bold text-white">Confirm cancel</button>
+                className="h-12 rounded-[14px] bg-loss-surface text-[15px] font-bold text-white">Confirm cancel</button>
             ) : (
               <button type="button" onClick={() => setConfirmCancel(true)} className="h-12 rounded-[14px] border-[1.5px] border-loss text-[15px] font-bold text-loss">Cancel SIP</button>
             )}
@@ -84,7 +84,7 @@ export default function ManageSipPage() {
           <h2 className="mb-1 text-[15px] font-bold">Instalments</h2>
           {history.length === 0 && <p className="text-sm text-muted-ink">None yet.</p>}
           {history.map((i) => (
-            <div key={`${i.date}-${i.ok}`} className="flex min-h-12 items-center justify-between border-b border-[#F1F2F4] text-sm">
+            <div key={`${i.date}-${i.ok}`} className="flex min-h-12 items-center justify-between border-b border-line-soft text-sm">
               <span>{formatDate(i.date)}</span>
               <span className={i.ok ? "font-semibold" : "font-semibold text-loss"}>{i.ok ? formatINR(i.amount) : "Missed · low demo balance"}</span>
             </div>

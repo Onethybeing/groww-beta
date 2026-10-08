@@ -59,7 +59,7 @@ export function TradeSheet({ instrument, price, priceDate, open, onOpenChange, o
       <SheetContent side="bottom" data-testid={`trade-sheet-${mode}`} className="mx-auto max-w-[430px] gap-3.5 rounded-t-3xl px-[22px] pb-[26px] pt-5">
         {instrument && (
           <>
-            <span className={`self-start rounded-full px-2.5 py-1 text-xs font-bold ${real ? "bg-mint text-groww" : "bg-[#FFF4E0] text-[#8A4B00]"}`}>
+            <span className={`self-start rounded-full px-2.5 py-1 text-xs font-bold ${real ? "bg-mint text-groww" : "bg-warn text-warn-ink"}`}>
               {real ? "Demo balance · no real money" : "Practice · virtual money"}
             </span>
             <div className="flex flex-col gap-0.5">
@@ -71,7 +71,7 @@ export function TradeSheet({ instrument, price, priceDate, open, onOpenChange, o
             <div className="grid grid-cols-2 gap-2">
               {(["buy", "sell"] as const).map((s) => (
                 <button key={s} type="button" aria-pressed={side === s} onClick={() => pickSide(s)} disabled={s === "sell" && held <= 0}
-                  className={`h-11 rounded-xl text-[15px] capitalize disabled:text-[#A3A6B2] ${side === s ? (s === "buy" ? "border-2 border-groww bg-mint font-bold text-groww" : "border-2 border-loss bg-[#FDECEA] font-bold text-loss") : "border-[1.5px] border-line font-semibold"}`}>{s}</button>
+                  className={`h-11 rounded-xl text-[15px] capitalize disabled:text-faint ${side === s ? (s === "buy" ? "border-2 border-groww bg-mint font-bold text-groww" : "border-2 border-loss bg-loss-soft font-bold text-loss") : "border-[1.5px] border-line font-semibold"}`}>{s}</button>
               ))}
             </div>
             <label className="flex flex-col gap-1.5 text-[13px] font-semibold text-muted-ink">{label}
@@ -82,12 +82,12 @@ export function TradeSheet({ instrument, price, priceDate, open, onOpenChange, o
                 {!isFund && <button type="button" aria-label="More shares" onClick={() => step(1)} className="flex size-12 items-center justify-center rounded-xl border border-line text-ink"><Plus className="size-5" aria-hidden /></button>}
               </div>
             </label>
-            <div className="flex justify-between text-sm text-[#3D4050]"><span>{isFund && side === "buy" ? `≈ ${qty} units` : "Order value"}</span><b>{formatINR(value, 2)}</b></div>
-            <div className="flex justify-between text-sm text-[#3D4050]"><span>{balanceLabel} after</span><b>{formatINR(Math.max(0, after), 2)}</b></div>
+            <div className="flex justify-between text-sm text-ink-2"><span>{isFund && side === "buy" ? `≈ ${qty} units` : "Order value"}</span><b>{formatINR(value, 2)}</b></div>
+            <div className="flex justify-between text-sm text-ink-2"><span>{balanceLabel} after</span><b>{formatINR(Math.max(0, after), 2)}</b></div>
             {held > 0 && <p className="text-xs text-muted-ink">You hold {held} {isFund ? "units" : held === 1 ? "share" : "shares"}</p>}
             {error && <p role="alert" className="text-sm font-semibold text-loss">{error}</p>}
             <button type="button" onClick={submit}
-              className={`flex h-[52px] items-center justify-center rounded-[14px] text-base font-bold text-white ${real ? (side === "sell" ? "bg-loss" : "bg-groww") : "bg-ink"}`}>
+              className={`flex h-[52px] items-center justify-center rounded-[14px] text-base font-bold ${real ? (side === "sell" ? "bg-loss-surface text-white" : "bg-brand-surface text-white") : "bg-inverse text-on-inverse"}`}>
               Confirm {real ? "" : "practice "}{side}
             </button>
             <span className="text-center text-xs text-muted-ink">

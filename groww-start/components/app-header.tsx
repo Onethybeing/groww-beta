@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { Search } from "lucide-react";
 import { useUi } from "@/lib/store/ui";
 import { GrowLogo } from "@/components/brand/grow-logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useToday, useApp } from "@/lib/store";
 import { formatDate } from "@/lib/format";
 
@@ -33,6 +34,7 @@ export function AppHeader({ active }: { active: "explore" | "holdings" }) {
         <button onClick={onLogoTap} aria-label="GROW Beta"><GrowLogo /></button>
         <div className="flex items-center gap-1">
           {offset > 0 && <span className="text-xs text-muted-ink">Demo date: {formatDate(today)}</span>}
+          <ThemeToggle />
           <Link href="/search" aria-label="Search" className="flex size-11 items-center justify-center"><Search className="size-[22px]" aria-hidden /></Link>
         </div>
       </header>

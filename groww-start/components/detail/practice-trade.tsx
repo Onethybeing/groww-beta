@@ -25,10 +25,10 @@ export function useTrade(instrument: Instrument, price: number, priceDate: strin
     <>
       {done && (
         <Link href={real ? "/holdings" : "/practice"} data-testid={real ? "order-done" : "practice-done"}
-          className="flex items-center gap-2.5 rounded-[14px] bg-ink px-3.5 py-3 text-sm text-white">
-          <CircleCheck className="size-5 text-[#7BE0BC]" aria-hidden />
+          className="flex items-center gap-2.5 rounded-[14px] bg-inverse px-3.5 py-3 text-sm text-on-inverse">
+          <CircleCheck className="size-5 text-accent-soft" aria-hidden />
           <span className="flex-1">{real ? `${done === "buy" ? "Bought" : "Sold"} with demo balance` : "Added to your Practice portfolio"}</span>
-          <b className="text-[#7BE0BC]">View</b>
+          <b className="text-accent-soft">View</b>
         </Link>
       )}
       {reflect && <ReflectionPrompt prompt="Why did you pick this?" onDone={() => setReflect(false)} />}
