@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${dmSans.variable} font-sans bg-page text-ink antialiased`}>
         <Providers>
-          <div className="mx-auto min-h-dvh max-w-[430px] bg-card shadow-sm">
+          <div className="mx-auto min-h-dvh max-w-[430px] bg-card shadow-sm lg:max-w-none lg:shadow-none">
             <AppChrome>{children}</AppChrome>
           </div>
         </Providers>

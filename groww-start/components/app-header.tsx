@@ -31,7 +31,7 @@ export function AppHeader({ active }: { active: "explore" | "holdings" }) {
   return (
     <>
       <header className="flex items-center justify-between px-5 pb-2.5 pt-3.5">
-        <button onClick={onLogoTap} aria-label="GROW Beta"><GrowLogo /></button>
+        <button onClick={onLogoTap} aria-label="GROW Beta" className="lg:invisible"><GrowLogo /></button>
         <div className="flex items-center gap-1">
           {offset > 0 && <span className="text-xs text-muted-ink">Demo date: {formatDate(today)}</span>}
           <ThemeToggle />

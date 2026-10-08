@@ -1,5 +1,6 @@
 "use client";
 import { SavedData } from "@/components/saved-data";
+import { TwoCol } from "@/components/two-col";
 import Link from "next/link";
 import { useMemo } from "react";
 import { ChevronRight, Flame, Plus, ReceiptText, Share, Wallet } from "lucide-react";
@@ -70,6 +71,7 @@ function HoldingsPageBody() {
     <>
       <AppHeader active="holdings" />
       <div className="flex flex-col gap-3.5 px-5 py-3.5">
+        <TwoCol left={<>
         <section className="flex items-center gap-3 rounded-2xl bg-inverse px-4 py-3.5 text-on-inverse">
           <Wallet className="size-6 flex-none text-accent-soft" aria-hidden />
           <div className="flex flex-1 flex-col">
@@ -120,6 +122,7 @@ function HoldingsPageBody() {
           <span className="text-[11px] text-habit-ink">Milestones reward consistency and learning, never trading more.</span>
         </section>
 
+        </>} right={<>
         <section className="flex flex-col">
           <h2 className="mb-1 text-[15px] font-bold">Stocks ({stocks.length})</h2>
           {stocks.length === 0 && <p className="py-1 text-sm text-muted-ink">No stocks yet. <Link href="/stocks" className="font-semibold text-groww">Explore stocks</Link></p>}
@@ -170,6 +173,7 @@ function HoldingsPageBody() {
           <Link href="/orders" className="flex min-h-11 items-center gap-2 text-sm font-semibold text-groww"><ReceiptText className="size-4" aria-hidden />Order history</Link>
           <Link href="/practice" className="flex min-h-11 items-center text-sm font-semibold text-groww">See your Practice portfolio →</Link>
         </div>
+        </>} />
       </div>
     </>
   );

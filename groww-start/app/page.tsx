@@ -4,6 +4,7 @@ import { ChevronRight, FlaskConical } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
 import { InstrumentRow, Monogram, instrumentHref } from "@/components/instrument-row";
 import { WelcomeSheet } from "@/components/welcome-sheet";
+import { TwoCol } from "@/components/two-col";
 import { useApp } from "@/lib/store";
 import { useQuotes } from "@/lib/market/client";
 import { getInstrument } from "@/lib/market/instruments";
@@ -25,6 +26,7 @@ export default function Home() {
     <>
       <AppHeader active="explore" />
       <div className="flex flex-col gap-4 px-5 py-3.5">
+        <TwoCol left={<>
         <div className="flex gap-2.5">
           {INDICES.map((s) => {
             const quote = q(s);
@@ -63,6 +65,7 @@ export default function Home() {
           </section>
         )}
 
+        </>} right={<>
         <section className="flex flex-col gap-2.5">
           <h2 className="text-[17px] font-bold">Popular large caps</h2>
           <div className="grid grid-cols-2 gap-2.5">
@@ -93,6 +96,7 @@ export default function Home() {
             <Link href="/funds" className="rounded-full border border-line px-3 py-2 text-[13px] font-semibold">Gold</Link>
           </div>
         </section>
+        </>} />
         <p data-testid="disclaimer" className="border-t border-line pt-3 text-center text-[11px] leading-[1.5] text-muted-ink">
           GROW Beta is a concept demo inspired by Groww · not affiliated with Groww · demo money only.<br />
           Prices are real past data (stocks to 7 Oct 2026, fund NAVs to 6 Oct 2026) · not investment advice.

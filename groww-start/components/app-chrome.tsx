@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect } from "react";
 import { usePathname } from "next/navigation";
 import { DemoPanel } from "./demo-panel";
 import { MilestoneToast } from "./milestone-toast";
+import { Sidebar } from "./sidebar";
 import { TabBar, TAB_PATHS } from "./tab-bar";
 import { useHydrated } from "@/lib/store/use-hydrated";
 import { useUi } from "@/lib/store/ui";
@@ -30,8 +31,9 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className={showTabs ? "pb-24" : ""}>
-        {children}
+      <Sidebar />
+      <div className={`lg:pl-60 ${showTabs ? "pb-24 lg:pb-10" : ""}`}>
+        <div className="lg:mx-auto lg:max-w-[1120px] lg:px-8">{children}</div>
       </div>
       {hydrated && <MilestoneToast />}
       {showTabs && <TabBar />}
