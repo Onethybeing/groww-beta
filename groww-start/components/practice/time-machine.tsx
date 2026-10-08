@@ -46,7 +46,7 @@ export function TimeMachine({ initialSymbol = "MF120716" }: { initialSymbol?: st
     <div className="flex flex-col gap-3.5">
       <p className="text-sm text-muted-ink">What if you&apos;d started a SIP back then? Replay real past prices, month by month.</p>
       <label className="flex flex-col gap-1.5 text-[13px] font-semibold text-muted-ink">Invest in
-        <select value={symbol} onChange={(e) => setSymbol(e.target.value)} className="h-[46px] rounded-xl border border-line bg-white px-3 text-[15px] font-semibold text-ink">
+        <select value={symbol} onChange={(e) => setSymbol(e.target.value)} className="h-[46px] rounded-xl border border-line bg-card px-3 text-[15px] font-semibold text-ink">
           <optgroup label="Mutual funds">{OPTIONS.filter((o) => o.kind === "fund").map((o) => <option key={o.symbol} value={o.symbol}>{o.name}</option>)}</optgroup>
           <optgroup label="Stocks & ETFs">{OPTIONS.filter((o) => o.kind !== "fund").map((o) => <option key={o.symbol} value={o.symbol}>{o.name}</option>)}</optgroup>
         </select>
@@ -63,7 +63,7 @@ export function TimeMachine({ initialSymbol = "MF120716" }: { initialSymbol?: st
           <div className="grid grid-cols-4 gap-1">
             {YEARS.map((y) => (
               <button key={y} type="button" aria-pressed={years === y} onClick={() => setYears(y)}
-                className={`h-9 rounded-full text-[13px] ${years === y ? "border-[1.5px] border-groww bg-mint font-bold text-groww" : "border border-line text-[#3D4050]"}`}>{y}y</button>
+                className={`h-9 rounded-full text-[13px] ${years === y ? "border-[1.5px] border-groww bg-mint font-bold text-groww" : "border border-line text-ink-2"}`}>{y}y</button>
             ))}
           </div>
         </div>
@@ -72,7 +72,7 @@ export function TimeMachine({ initialSymbol = "MF120716" }: { initialSymbol?: st
         setRun({ symbol, amount, years });
         if (runs === 0) setReflect(true);
         recordRun();
-      }} className="flex h-12 items-center justify-center rounded-[14px] bg-groww text-base font-bold text-white disabled:opacity-50">Replay</button>
+      }} className="flex h-12 items-center justify-center rounded-[14px] bg-brand-surface text-base font-bold text-white disabled:opacity-50">Replay</button>
 
       {result && result.series.length > 0 && run && (
         <section data-testid="tm-result" className="flex flex-col gap-3 rounded-[18px] border border-line p-4">
@@ -85,10 +85,10 @@ export function TimeMachine({ initialSymbol = "MF120716" }: { initialSymbol?: st
           </div>
           <SipChart series={result.series} />
           <div className="flex items-center justify-end gap-3 text-xs text-muted-ink">
-            <span className="flex items-center gap-1"><span className="w-3.5 border-t-2 border-dashed border-[#8A8D9B]" />Invested</span>
-            <span className="flex items-center gap-1"><span className="h-[3px] w-3.5 rounded bg-groww" />Value</span>
+            <span className="flex items-center gap-1"><span className="w-3.5 border-t-2 border-dashed border-faint" />Invested</span>
+            <span className="flex items-center gap-1"><span className="h-[3px] w-3.5 rounded bg-brand-surface" />Value</span>
           </div>
-          <p className="rounded-xl bg-surface p-3 text-sm leading-[1.5] text-[#3D4050]">{takeaway(result)}</p>
+          <p className="rounded-xl bg-surface p-3 text-sm leading-[1.5] text-ink-2">{takeaway(result)}</p>
           <span className="text-xs text-muted-ink">
             Real past {run.symbol.startsWith("MF") ? "NAVs from AMFI via mfapi.in" : "prices"}, as of {formatDate(result.series[result.series.length - 1].date)}. Past performance doesn&apos;t guarantee future returns.
           </span>

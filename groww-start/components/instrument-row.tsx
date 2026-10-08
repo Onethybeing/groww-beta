@@ -3,7 +3,7 @@ import type { Instrument } from "@/lib/market/instruments";
 import type { Quote } from "@/lib/types";
 import { formatINR, formatPct } from "@/lib/format";
 
-const TINTS = ["bg-[#EAF1FD] text-[#2457C5]", "bg-[#F3EEFD] text-[#6B3FC9]", "bg-[#FFF4E0] text-[#8A4B00]", "bg-mint text-groww"];
+const TINTS = ["bg-info text-info-ink", "bg-chip text-info-ink", "bg-warn text-warn-ink", "bg-mint text-groww"];
 
 export const instrumentHref = (i: Instrument) => (i.kind === "fund" ? `/funds/${i.symbol}` : `/stocks/${encodeURIComponent(i.symbol)}`);
 
@@ -14,7 +14,7 @@ export function Monogram({ i, index = 0, size = "size-8" }: { i: Instrument; ind
 
 export function InstrumentRow({ i, q, index, sub }: { i: Instrument; q?: Quote; index: number; sub: string }) {
   return (
-    <Link href={instrumentHref(i)} data-testid={`row-${i.symbol}`} className="flex min-h-16 items-center gap-3 border-b border-[#F1F2F4]">
+    <Link href={instrumentHref(i)} data-testid={`row-${i.symbol}`} className="flex min-h-16 items-center gap-3 border-b border-line-soft">
       <Monogram i={i} index={index} />
       <span className="flex flex-1 flex-col"><b className="text-[15px]">{i.name}</b><span className="text-xs text-muted-ink">{sub}</span></span>
       {q ? (

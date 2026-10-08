@@ -20,7 +20,7 @@ export function DemoPanel() {
   const router = useRouter();
   const { reset, applyPreset, advanceMonth, simulateFriendJoined } = useApp.getState();
   return (
-    <div data-testid="demo-panel" className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-[430px] rounded-t-3xl border border-line bg-white p-4 shadow-2xl">
+    <div data-testid="demo-panel" className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-[430px] rounded-t-3xl border border-line bg-card p-4 shadow-2xl">
       <div className="mb-3 flex items-center justify-between gap-2">
         <p className="font-bold">Demo controls</p>
         <span className="flex-1 text-xs text-muted-ink">Demo date: {formatDate(today)}</span>

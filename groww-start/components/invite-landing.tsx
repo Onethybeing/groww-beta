@@ -19,12 +19,12 @@ export function InviteLanding({ code }: { code: string }) {
       <div className="flex flex-col gap-2">
         <span className="text-xs font-bold uppercase tracking-[0.08em] text-groww">You&apos;re invited</span>
         <h1 className="text-[26px] font-bold leading-[1.2]">A friend invited you to GROW Beta</h1>
-        <p className="text-[15px] leading-[1.5] text-[#3D4050]">
+        <p className="text-[15px] leading-[1.5] text-ink-2">
           Learn the basics in 2 minutes, practise with virtual money, then start a SIP from ₹100. Join with this invite and get a bonus streak freeze.
         </p>
       </div>
-      <div className="flex items-center gap-3 rounded-2xl bg-[#EEF5FF] p-4">
-        <Snowflake className="size-7 text-[#2457C5]" aria-hidden />
+      <div className="flex items-center gap-3 rounded-2xl bg-info p-4">
+        <Snowflake className="size-7 text-info-ink" aria-hidden />
         <span className="text-sm">Invite code <b className="font-mono tracking-[0.08em]">{normaliseCode(code)}</b></span>
       </div>
       {!valid ? (
@@ -35,7 +35,7 @@ export function InviteLanding({ code }: { code: string }) {
         <button type="button" data-testid="accept-invite" onClick={() => {
           const r = acceptReferral(code);
           setResult(r.ok ? { ok: true, text: "Invite accepted: +1 streak freeze added." } : { ok: false, text: r.error });
-        }} className="h-[52px] rounded-[14px] bg-groww text-base font-bold text-white">Accept invite</button>
+        }} className="h-[52px] rounded-[14px] bg-brand-surface text-base font-bold text-white">Accept invite</button>
       ) : null}
       {result && <p role="status" className={`text-sm font-semibold ${result.ok ? "text-groww" : "text-loss"}`}>{result.text}</p>}
       <Link href="/" className="flex h-12 items-center justify-center rounded-[14px] border-[1.5px] border-line text-[15px] font-bold">Open GROW Beta</Link>

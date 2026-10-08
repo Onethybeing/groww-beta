@@ -2,14 +2,18 @@
 import { useEffect, useRef } from "react";
 import { createChart, AreaSeries, ColorType } from "lightweight-charts";
 import type { PricePoint } from "@/lib/types";
+import { useResolvedTheme } from "@/lib/store/prefs";
+import { chartColors, withAlpha } from "./chart-colors";
 
 export function PriceChart({ points, height = 180 }: { points: PricePoint[]; height?: number }) {
   const ref = useRef<HTMLDivElement>(null);
+  const theme = useResolvedTheme();
   useEffect(() => {
     if (!ref.current || points.length < 2) return;
+    const c = chartColors();
     const chart = createChart(ref.current, {
       autoSize: true,
-      layout: { background: { type: ColorType.Solid, color: "transparent" }, textColor: "#5B5E6E", fontFamily: "DM Sans, sans-serif" },
+      layout: { background: { type: ColorType.Solid, color: "transparent" }, textColor: c.text, fontFamily: "DM Sans, sans-serif" },
       grid: { vertLines: { visible: false }, horzLines: { visible: false } },
       rightPriceScale: { borderVisible: false },
       timeScale: { borderVisible: false, fixLeftEdge: true, fixRightEdge: true },
@@ -18,10 +22,10 @@ export function PriceChart({ points, height = 180 }: { points: PricePoint[]; hei
     });
     const up = points[points.length - 1].close >= points[0].close;
     const series = chart.addSeries(AreaSeries, {
-      lineColor: up ? "#0B7A55" : "#C0392B",
+      lineColor: up ? c.brand : c.loss,
       lineWidth: 2,
-      topColor: up ? "rgba(11,122,85,0.22)" : "rgba(192,57,43,0.22)",
-      bottomColor: "rgba(255,255,255,0)",
+      topColor: withAlpha(up ? c.brand : c.loss, 0.22),
+      bottomColor: withAlpha(up ? c.brand : c.loss, 0),
       priceLineVisible: false,
     });
     series.setData(points.map((p) => ({ time: p.date, value: p.close })));
@@ -29,6 +33,6 @@ export function PriceChart({ points, height = 180 }: { points: PricePoint[]; hei
     chart.timeScale().fitContent();
     const raf = requestAnimationFrame(() => chart.timeScale().fitContent());
     return () => { cancelAnimationFrame(raf); chart.remove(); };
-  }, [points]);
+  }, [points, theme]);
   return <div ref={ref} style={{ height }} className="w-full" />;
 }

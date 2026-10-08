@@ -39,11 +39,11 @@ export default function ReferPage() {
     <>
       <PageHeader title="Invite friends" back="/holdings" />
       <div className="flex flex-col gap-4 px-5 py-4">
-        <section className="flex flex-col items-center gap-2 rounded-[20px] bg-groww px-5 py-6 text-center text-white">
+        <section className="flex flex-col items-center gap-2 rounded-[20px] bg-brand-surface px-5 py-6 text-center text-white">
           <Gift className="size-9" aria-hidden />
           <h2 className="text-xl font-bold">Invite a friend, both get a streak freeze</h2>
-          <p className="text-sm text-[#E3F7EF]">A freeze keeps your SIP streak alive if you skip a month. Rewards are never cash.</p>
-          <span data-testid="my-code" className="mt-2 rounded-xl bg-white px-4 py-2 font-mono text-2xl font-bold tracking-[0.12em] text-groww">{code}</span>
+          <p className="text-sm text-white/85">A freeze keeps your SIP streak alive if you skip a month. Rewards are never cash.</p>
+          <span data-testid="my-code" className="mt-2 rounded-xl bg-card px-4 py-2 font-mono text-2xl font-bold tracking-[0.12em] text-groww">{code}</span>
         </section>
 
         <div className="flex items-center gap-2 rounded-[14px] border border-line px-3 py-2.5">
@@ -52,15 +52,15 @@ export default function ReferPage() {
             {copied ? <Check className="size-4" aria-hidden /> : <Copy className="size-4" aria-hidden />}{copied ? "Copied" : "Copy"}
           </button>
         </div>
-        <button type="button" onClick={share} className="flex h-[52px] items-center justify-center gap-2 rounded-[14px] bg-groww text-base font-bold text-white">
+        <button type="button" onClick={share} className="flex h-[52px] items-center justify-center gap-2 rounded-[14px] bg-brand-surface text-base font-bold text-white">
           <Share2 className="size-[18px]" aria-hidden />Share invite
         </button>
 
-        <section className="flex items-center gap-3 rounded-2xl bg-[#EEF5FF] p-4">
-          <Snowflake className="size-7 text-[#2457C5]" aria-hidden />
+        <section className="flex items-center gap-3 rounded-2xl bg-info p-4">
+          <Snowflake className="size-7 text-info-ink" aria-hidden />
           <div className="flex flex-col">
             <b data-testid="freeze-total" className="text-base">{freezes} streak freeze{freezes === 1 ? "" : "s"}</b>
-            <span className="text-xs text-[#3D4050]">1 for everyone + 1 per friend who joins + 1 if you joined via an invite (up to {MAX_REFERRAL_FREEZES} from invites)</span>
+            <span className="text-xs text-ink-2">1 for everyone + 1 per friend who joins + 1 if you joined via an invite (up to {MAX_REFERRAL_FREEZES} from invites)</span>
           </div>
         </section>
 
@@ -68,7 +68,7 @@ export default function ReferPage() {
           <h2 className="mb-1 text-[15px] font-bold">Friends who joined ({referrals.length})</h2>
           {referrals.length === 0 && <p className="py-1 text-sm text-muted-ink">No one yet. Share your link to get started.</p>}
           {referrals.map((r, i) => (
-            <div key={r.name} data-testid="friend-row" className="flex min-h-12 items-center justify-between border-b border-[#F1F2F4] text-sm">
+            <div key={r.name} data-testid="friend-row" className="flex min-h-12 items-center justify-between border-b border-line-soft text-sm">
               <span className="flex items-center gap-2"><UserPlus className="size-4 text-groww" aria-hidden />{r.name}</span>
               <span className="text-muted-ink">{formatDate(r.joinedAt)} · {earned(i) ? "+1 freeze" : "limit reached"}</span>
             </div>

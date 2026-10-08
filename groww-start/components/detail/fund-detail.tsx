@@ -69,7 +69,7 @@ export function FundDetail({ instrument }: { instrument: Instrument }) {
           </div>
           <div className="flex gap-1.5">
             {returns.map(({ y, v }) => v !== null && (
-              <span key={y} className={`flex flex-col items-center rounded-[10px] px-2 py-1.5 ${v < 0 ? "bg-[#FDECEA]" : "bg-surface"}`}>
+              <span key={y} className={`flex flex-col items-center rounded-[10px] px-2 py-1.5 ${v < 0 ? "bg-loss-soft" : "bg-surface"}`}>
                 <span className="text-[11px] text-muted-ink">{y === 1 ? "1Y" : <Explain term="returns_pa" className="!text-muted-ink">{y}Y p.a.</Explain>}</span>
                 <b className={`text-[13px] ${v < 0 ? "text-loss" : "text-groww"}`}>{formatPct(v)}</b>
               </span>
@@ -87,7 +87,7 @@ export function FundDetail({ instrument }: { instrument: Instrument }) {
 
         {whatIf && (
           <Link href={`/practice/time-machine?symbol=${instrument.symbol}`} data-testid="what-if"
-            className="flex flex-col gap-2 rounded-2xl border-[1.5px] border-[#BFE8D8] bg-[#F4FBF8] p-3.5">
+            className="flex flex-col gap-2 rounded-2xl border-[1.5px] border-tip-line bg-tip p-3.5">
             <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.06em] text-groww"><Clock className="size-4" aria-hidden />What if you&apos;d started a SIP?</span>
             <span className="text-sm leading-[1.45]">
               ₹500/month for the last 3 years: <b>{formatINR(whatIf.invested)}</b> invested, worth <b>{formatINR(whatIf.finalValue)}</b> today{" "}
@@ -108,12 +108,12 @@ export function FundDetail({ instrument }: { instrument: Instrument }) {
         <p className="text-xs text-muted-ink">Real past NAVs from AMFI via mfapi.in, as of {formatDate(last.date)}. Past performance doesn&apos;t guarantee future returns.</p>
       </main>
 
-      <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto grid max-w-[430px] grid-cols-2 gap-2.5 border-t border-line bg-white px-5 pb-[22px] pt-3">
+      <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto grid max-w-[430px] grid-cols-2 gap-2.5 border-t border-line bg-card px-5 pb-[22px] pt-3">
         <button type="button" onClick={() => trade.openSheet()}
           className="flex h-[52px] flex-col items-center justify-center rounded-[14px] border-[1.5px] border-groww text-groww">
-          <b className="text-[15px]">Try with virtual ₹</b><span className="text-[11px] text-[#3D4050]">No real money</span>
+          <b className="text-[15px]">Try with virtual ₹</b><span className="text-[11px] text-ink-2">No real money</span>
         </button>
-        <Link href={`/funds/${instrument.symbol}/sip`} className="flex h-[52px] items-center justify-center rounded-[14px] bg-groww text-base font-bold text-white">Start SIP</Link>
+        <Link href={`/funds/${instrument.symbol}/sip`} className="flex h-[52px] items-center justify-center rounded-[14px] bg-brand-surface text-base font-bold text-white">Start SIP</Link>
       </footer>
       {trade.sheet}
       {real.sheet}

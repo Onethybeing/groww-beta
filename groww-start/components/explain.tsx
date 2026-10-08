@@ -27,9 +27,9 @@ export function Explain({ term, children, forYou, icon = false, className = "" }
         <SheetContent side="bottom" className="mx-auto max-w-[430px] gap-3 rounded-t-3xl px-[22px] pb-7 pt-4">
           <span className="text-xs font-bold uppercase tracking-[0.08em] text-groww">What&apos;s this?</span>
           <SheetTitle className="text-[22px] font-bold text-ink">{entry.term}</SheetTitle>
-          <SheetDescription className="text-[15px] leading-[1.55] text-[#3D4050]">{entry.short}</SheetDescription>
+          <SheetDescription className="text-[15px] leading-[1.55] text-ink-2">{entry.short}</SheetDescription>
           {forYou && (
-            <div className="flex flex-col gap-1.5 rounded-[14px] bg-surface px-3.5 py-3 text-sm leading-[1.5] text-[#3D4050]">
+            <div className="flex flex-col gap-1.5 rounded-[14px] bg-surface px-3.5 py-3 text-sm leading-[1.5] text-ink-2">
               <b className="text-ink">For you, right now</b>
               <span>{forYou}</span>
             </div>

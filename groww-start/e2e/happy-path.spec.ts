@@ -89,3 +89,20 @@ test("Groww flow with beginner features: hints → explainer → practice buy �
   await expect(newbie.getByText("Invite accepted")).toBeVisible();
   await fresh.close();
 });
+
+test("dark mode applies before paint and has no hydration warning", async ({ page }) => {
+  const warnings: string[] = [];
+  page.on("console", (m) => { if (/hydrat/i.test(m.text())) warnings.push(m.text()); });
+  await page.addInitScript(() => {
+    if (!localStorage.getItem("grow-ui")) localStorage.setItem("grow-ui", JSON.stringify({ version: 1, state: { theme: "dark", lang: "en", anonId: "test-anon-id" } }));
+    localStorage.setItem("groww-genz", JSON.stringify({ version: 3, state: { welcomeSeen: true } }));
+  });
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  await page.reload();
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  await page.getByTestId("theme-toggle").click(); // dark → system
+  await page.getByTestId("theme-toggle").click(); // system → light
+  await expect(page.locator("html")).not.toHaveClass(/dark/);
+  expect(warnings).toEqual([]);
+});

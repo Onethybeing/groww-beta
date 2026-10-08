@@ -25,7 +25,7 @@ function MilestoneChip({ k, highlight }: { k: MilestoneKey; highlight: boolean }
   const m = MILESTONES[k];
   return (
     <Link href={href} data-testid={`milestone-${k}`} data-achieved="true" aria-label={`${m.title}, share`}
-      className={`flex items-center gap-1.5 rounded-full px-2.5 py-[5px] text-xs font-semibold ${highlight ? "bg-streak text-white" : "border border-[#F0DCC3] bg-white"}`}>
+      className={`flex items-center gap-1.5 rounded-full px-2.5 py-[5px] text-xs font-semibold ${highlight ? "bg-streak text-white" : "border border-habit-line bg-card"}`}>
       <MilestoneIcon name={m.icon} className="size-3.5" />
       {m.title}
       {highlight && <Share className="size-3" aria-hidden />}
@@ -69,13 +69,13 @@ export default function HoldingsPage() {
     <>
       <AppHeader active="holdings" />
       <div className="flex flex-col gap-3.5 px-5 py-3.5">
-        <section className="flex items-center gap-3 rounded-2xl bg-ink px-4 py-3.5 text-white">
-          <Wallet className="size-6 flex-none text-[#7BE0BC]" aria-hidden />
+        <section className="flex items-center gap-3 rounded-2xl bg-inverse px-4 py-3.5 text-on-inverse">
+          <Wallet className="size-6 flex-none text-accent-soft" aria-hidden />
           <div className="flex flex-1 flex-col">
-            <span className="text-xs text-[#B9BBC6]">Demo balance · not real money</span>
+            <span className="text-xs text-on-inverse-muted">Demo balance · not real money</span>
             <b data-testid="wallet" className="text-lg">{formatINR(wallet, 2)}</b>
           </div>
-          <button type="button" onClick={() => addMoney(ADD_STEP)} className="flex h-10 items-center gap-1 rounded-xl bg-white/10 px-3 text-sm font-semibold">
+          <button type="button" onClick={() => addMoney(ADD_STEP)} className="flex h-10 items-center gap-1 rounded-xl bg-on-inverse/10 px-3 text-sm font-semibold">
             <Plus className="size-4" aria-hidden />{formatINR(ADD_STEP)}
           </button>
         </section>
@@ -83,40 +83,40 @@ export default function HoldingsPage() {
         <section className="flex flex-col gap-2.5 rounded-2xl border border-line px-4 py-3.5">
           <div className="flex justify-between text-[13px] text-muted-ink"><span>Current value</span><span>Invested</span></div>
           <div className="flex items-end justify-between"><b data-testid="current-value" className="text-[22px]">{formatINR(value, 2)}</b><b className="text-base">{formatINR(invested, 2)}</b></div>
-          <div className="flex justify-between border-t border-[#F1F2F4] pt-2 text-[13px]">
+          <div className="flex justify-between border-t border-line-soft pt-2 text-[13px]">
             <span className="text-muted-ink">Total returns</span>
             <b><Pnl value={pnl} /> ({formatPct(invested ? (pnl / invested) * 100 : 0)})</b>
           </div>
         </section>
 
-        <section aria-label="Your habit" data-testid="habit-card" className="flex flex-col gap-3 rounded-[18px] border border-[#F6DDBE] bg-[#FFF8EF] px-4 py-3.5">
+        <section aria-label="Your habit" data-testid="habit-card" className="flex flex-col gap-3 rounded-[18px] border border-habit-line bg-habit px-4 py-3.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-[0.08em] text-[#8A4B00]">Your habit</span>
-            {sips.length > 0 && <span className="text-xs text-[#7A4A12]">{freezesLeft} streak freeze{freezesLeft === 1 ? "" : "s"} ready</span>}
+            <span className="text-xs font-bold uppercase tracking-[0.08em] text-warn-ink">Your habit</span>
+            {sips.length > 0 && <span className="text-xs text-habit-ink">{freezesLeft} streak freeze{freezesLeft === 1 ? "" : "s"} ready</span>}
           </div>
           {sips.length > 0 ? (
             <div className="flex items-center gap-3.5">
               <span className="flex size-12 flex-none items-center justify-center rounded-[14px] bg-streak text-white"><Flame className="size-[26px]" aria-hidden /></span>
               <div className="flex flex-1 flex-col">
                 <b className="text-xl"><span data-testid="streak-count">{streak.current}</span>-month SIP streak</b>
-                <span className="text-[13px] text-[#5C3A10]">{nextSip ? `Next SIP on ${shortDate(nextSip)}` : sips.some((x) => x.status === "paused") ? "SIPs paused · resume anytime" : "No active SIP · start a new one anytime"}</span>
+                <span className="text-[13px] text-habit-ink">{nextSip ? `Next SIP on ${shortDate(nextSip)}` : sips.some((x) => x.status === "paused") ? "SIPs paused · resume anytime" : "No active SIP · start a new one anytime"}</span>
               </div>
               {goal && <GoalRing pct={(sipInvested / goal.target) * 100} size={56} />}
             </div>
           ) : (
-            <p className="text-sm text-[#5C3A10]">Start a SIP to build a streak. Even ₹100 a month counts. <Link href={starterSipHref(answers)} className="font-bold text-groww underline">Start small</Link></p>
+            <p className="text-sm text-habit-ink">Start a SIP to build a streak. Even ₹100 a month counts. <Link href={starterSipHref(answers)} className="font-bold text-groww underline">Start small</Link></p>
           )}
-          {goal && sips.length > 0 && <span className="text-xs text-[#5C3A10]">Goal: {goal.name} · {formatINR(sipInvested)} of {formatINR(goal.target)} via SIPs</span>}
+          {goal && sips.length > 0 && <span className="text-xs text-habit-ink">Goal: {goal.name} · {formatINR(sipInvested)} of {formatINR(goal.target)} via SIPs</span>}
           {earned.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {earned.map((k, idx) => <MilestoneChip key={k} k={k} highlight={idx === 0} />)}
             </div>
           )}
-          <Link href="/refer" data-testid="refer-link" className="flex items-center justify-between rounded-xl bg-white px-3 py-2.5 text-[13px] font-semibold text-[#8A4B00]">
+          <Link href="/refer" data-testid="refer-link" className="flex items-center justify-between rounded-xl bg-card px-3 py-2.5 text-[13px] font-semibold text-warn-ink">
             Invite friends · earn streak freezes
             <ChevronRight className="size-4" aria-hidden />
           </Link>
-          <span className="text-[11px] text-[#7A4A12]">Milestones reward consistency and learning, never trading more.</span>
+          <span className="text-[11px] text-habit-ink">Milestones reward consistency and learning, never trading more.</span>
         </section>
 
         <section className="flex flex-col">
@@ -125,7 +125,7 @@ export default function HoldingsPage() {
           {stocks.map((h) => {
             const i = getInstrument(h.symbol)!;
             return (
-              <Link key={h.symbol} href={instrumentHref(i)} data-testid={`real-${h.symbol}`} className="flex min-h-[60px] items-center justify-between border-b border-[#F1F2F4]">
+              <Link key={h.symbol} href={instrumentHref(i)} data-testid={`real-${h.symbol}`} className="flex min-h-[60px] items-center justify-between border-b border-line-soft">
                 <span className="flex flex-col gap-0.5"><b className="text-[15px]">{i.name}</b><span className="text-xs text-muted-ink">{h.qty} {h.qty === 1 ? "share" : "shares"} · avg {formatINR(h.avgPrice, 2)}</span></span>
                 <span className="flex flex-col text-right"><b className="text-[15px]">{formatINR(h.value, 2)}</b><span className="text-xs"><Pnl value={h.pnl} /></span></span>
               </Link>
@@ -139,17 +139,17 @@ export default function HoldingsPage() {
           {sipRows.map(({ sip, invested: inv, value: val }) => {
             const f = getInstrument(sip.symbol);
             return (
-              <Link key={sip.id} href={`/sips/${sip.id}`} data-testid={sip.status === "cancelled" ? `sip-cancelled-${sip.id}` : `sip-${sip.symbol}`} className="flex min-h-[60px] items-center justify-between border-b border-[#F1F2F4]">
+              <Link key={sip.id} href={`/sips/${sip.id}`} data-testid={sip.status === "cancelled" ? `sip-cancelled-${sip.id}` : `sip-${sip.symbol}`} className="flex min-h-[60px] items-center justify-between border-b border-line-soft">
                 <span className="flex flex-col gap-0.5">
                   <b className="text-[15px]">{f?.name ?? sip.symbol}</b>
                   <span className="text-xs text-muted-ink">
                     SIP {formatINR(sip.amount)} · {ordinal(sip.day)}
-                    {sip.status !== "active" && <span className={`ml-1 font-bold capitalize ${sip.status === "paused" ? "text-[#8A4B00]" : "text-muted-ink"}`}>· {sip.status}</span>}
+                    {sip.status !== "active" && <span className={`ml-1 font-bold capitalize ${sip.status === "paused" ? "text-warn-ink" : "text-muted-ink"}`}>· {sip.status}</span>}
                   </span>
                 </span>
                 <span className="flex items-center gap-2">
                   <span className="flex flex-col text-right"><b className="text-[15px]">{formatINR(val, 2)}</b><span className="text-xs"><Pnl value={val - inv} /></span></span>
-                  <ChevronRight className="size-4 text-[#8A8D9B]" aria-hidden />
+                  <ChevronRight className="size-4 text-faint" aria-hidden />
                 </span>
               </Link>
             );
@@ -157,7 +157,7 @@ export default function HoldingsPage() {
           {lumpsumFunds.map((h) => {
             const i = getInstrument(h.symbol)!;
             return (
-              <Link key={h.symbol} href={instrumentHref(i)} className="flex min-h-[60px] items-center justify-between border-b border-[#F1F2F4]">
+              <Link key={h.symbol} href={instrumentHref(i)} className="flex min-h-[60px] items-center justify-between border-b border-line-soft">
                 <span className="flex flex-col gap-0.5"><b className="text-[15px]">{i.name}</b><span className="text-xs text-muted-ink">One-time · {h.qty} units</span></span>
                 <span className="flex flex-col text-right"><b className="text-[15px]">{formatINR(h.value, 2)}</b><span className="text-xs"><Pnl value={h.pnl} /></span></span>
               </Link>

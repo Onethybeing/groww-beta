@@ -35,16 +35,16 @@ export function MilestoneToast() {
   if (!key) return null;
   const m = MILESTONES[key];
   return (
-    <div role="status" data-testid="milestone-toast" className="fixed inset-x-0 top-3 z-40 mx-auto flex max-w-[400px] items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-white shadow-lg">
-      <span className="flex size-10 items-center justify-center rounded-xl bg-white/10">
-        <MilestoneIcon name={m.icon} className="size-5 text-[#7BE0BC]" />
+    <div role="status" data-testid="milestone-toast" className="fixed inset-x-0 top-3 z-40 mx-auto flex max-w-[400px] items-center gap-3 rounded-2xl bg-inverse px-4 py-3 text-on-inverse shadow-lg">
+      <span className="flex size-10 items-center justify-center rounded-xl bg-on-inverse/10">
+        <MilestoneIcon name={m.icon} className="size-5 text-accent-soft" />
       </span>
       <div className="flex-1">
         <p className="text-sm font-semibold">Milestone: {m.title}</p>
-        <p className="text-xs text-white/70">{m.description}</p>
+        <p className="text-xs text-on-inverse/70">{m.description}</p>
       </div>
-      <Link href={href} onClick={dismiss} className="text-sm font-semibold text-[#7BE0BC]">Share</Link>
-      <button onClick={dismiss} aria-label="Dismiss" className="flex size-8 items-center justify-center text-white/60">
+      <Link href={href} onClick={dismiss} className="text-sm font-semibold text-accent-soft">Share</Link>
+      <button onClick={dismiss} aria-label="Dismiss" className="flex size-8 items-center justify-center text-on-inverse/60">
         <X className="size-4" aria-hidden />
       </button>
     </div>

@@ -76,8 +76,8 @@ export function StockDetail({ instrument }: { instrument: Instrument }) {
             forYou={`${instrument.short} closed at ${formatINR(last.close, 2)}, ${Math.round(pos)}% of the way from its 1-year low to its high.`}>
             52-week range
           </Explain>
-          <div className="relative h-1.5 rounded-full bg-[#EEF0F2]">
-            <div className="absolute -top-1 h-3.5 w-1 rounded-sm bg-ink" style={{ left: `${Math.min(98, Math.max(0, pos))}%` }} />
+          <div className="relative h-1.5 rounded-full bg-chip">
+            <div className="absolute -top-1 h-3.5 w-1 rounded-sm bg-inverse" style={{ left: `${Math.min(98, Math.max(0, pos))}%` }} />
           </div>
           <div className="flex justify-between text-xs text-muted-ink"><span>Low {formatINR(yr.low, 2)}</span><span>High {formatINR(yr.high, 2)}</span></div>
         </div>
@@ -97,12 +97,12 @@ export function StockDetail({ instrument }: { instrument: Instrument }) {
         {real.notice}
       </main>
 
-      <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto grid max-w-[430px] grid-cols-2 gap-2.5 border-t border-line bg-white px-5 pb-[22px] pt-3">
+      <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto grid max-w-[430px] grid-cols-2 gap-2.5 border-t border-line bg-card px-5 pb-[22px] pt-3">
         <button type="button" onClick={() => practice.openSheet()}
           className="flex h-[52px] flex-col items-center justify-center rounded-[14px] border-[1.5px] border-groww text-groww">
-          <b className="text-[15px]">Practice buy</b><span className="text-[11px] text-[#3D4050]">Virtual ₹10,000</span>
+          <b className="text-[15px]">Practice buy</b><span className="text-[11px] text-ink-2">Virtual ₹10,000</span>
         </button>
-        <button type="button" onClick={() => real.openSheet()} className="h-[52px] rounded-[14px] bg-groww text-base font-bold text-white">Buy</button>
+        <button type="button" onClick={() => real.openSheet()} className="h-[52px] rounded-[14px] bg-brand-surface text-base font-bold text-white">Buy</button>
       </footer>
       {practice.sheet}
       {real.sheet}

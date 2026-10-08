@@ -128,22 +128,37 @@
     @apply font-sans;
   }
 }
-/* Groww "Start here" tokens (design canvas) */
+/* GROW Beta semantic tokens (light / dark) */
 :root {
-  --primary: #0b7a55;
-  --primary-foreground: #ffffff;
-  --ring: #0b7a55;
-  --radius: 0.875rem;
+  --bg: #f3f4f6; --card: #ffffff; --surface: #f6f7f9; --chip: #f1f2f4; --ink: #1b1d29; --ink-2: #3d4050;
+  --muted-ink: #5b5e6e; --faint: #6f7280; --line: #e6e8ec; --line-soft: #f1f2f4; --brand: #0b7a55;
+  --brand-ink: #075c40; --mint: #e8f8f2; --loss: #c0392b; --loss-soft: #fdecea; --streak: #f08a24;
+  --tip: #f4fbf8; --tip-line: #bfe8d8; --warn: #fff4e0; --warn-ink: #8a4b00; --habit: #fff8ef; --habit-line: #f6ddbe;
+  --habit-ink: #7a4a12; --info: #eef5ff; --info-ink: #2457c5; --inverse: #1b1d29; --on-inverse: #ffffff;
+  --on-inverse-muted: #b9bbc6; --accent-soft: #7be0bc; --brand-surface: #0b7a55; --brand-surface-2: #138a63; --loss-surface: #c0392b;
+  --primary: var(--brand-surface); --primary-foreground: #ffffff; --ring: var(--brand); --radius: 0.875rem;
+  --background: var(--card); --foreground: var(--ink); --card-foreground: var(--ink);
+  --popover: var(--card); --popover-foreground: var(--ink); --border: var(--line); --input: var(--line);
+}
+.dark {
+  --bg: #08090c; --card: #15171e; --surface: #1c1f27; --chip: #252935; --ink: #eceef3; --ink-2: #c9ccd6;
+  --muted-ink: #a3a8b6; --faint: #8f94a3; --line: #2c3140; --line-soft: #232733; --brand: #34c48f;
+  --brand-ink: #6ad9ae; --mint: #133a2d; --loss: #ff8a75; --loss-soft: #3a1f1b; --streak: #f5a04a;
+  --tip: #10271e; --tip-line: #23523f; --warn: #3a2a10; --warn-ink: #f3c27a; --habit: #2a2015; --habit-line: #4d3a22;
+  --habit-ink: #f0c48f; --info: #16233a; --info-ink: #9dbdff; --inverse: #eceef3; --on-inverse: #15171e;
+  --on-inverse-muted: #4f5363; --accent-soft: #0b7a55; --brand-surface: #0d6b4e; --brand-surface-2: #12805d; --loss-surface: #b3372a;
+  --primary: var(--brand-surface); --primary-foreground: #ffffff; --ring: var(--brand);
+  --background: var(--card); --foreground: var(--ink); --card-foreground: var(--ink);
+  --popover: var(--card); --popover-foreground: var(--ink); --border: var(--line); --input: var(--line);
 }
 @theme inline {
-  --color-groww: #0b7a55;
-  --color-groww-dark: #075c40;
-  --color-mint: #e8f8f2;
-  --color-ink: #1b1d29;
-  --color-muted-ink: #5b5e6e;
-  --color-line: #e6e8ec;
-  --color-surface: #f6f7f9;
-  --color-loss: #c0392b;
-  --color-streak: #f08a24;
+  --color-groww: var(--brand); --color-groww-dark: var(--brand-ink); --color-mint: var(--mint);
+  --color-ink: var(--ink); --color-ink-2: var(--ink-2); --color-muted-ink: var(--muted-ink); --color-faint: var(--faint);
+  --color-line: var(--line); --color-line-soft: var(--line-soft); --color-surface: var(--surface); --color-card: var(--card);
+  --color-chip: var(--chip); --color-loss: var(--loss); --color-loss-soft: var(--loss-soft); --color-streak: var(--streak);
+  --color-tip: var(--tip); --color-tip-line: var(--tip-line); --color-warn: var(--warn); --color-warn-ink: var(--warn-ink);
+  --color-habit: var(--habit); --color-habit-line: var(--habit-line); --color-habit-ink: var(--habit-ink);
+  --color-info: var(--info); --color-info-ink: var(--info-ink); --color-inverse: var(--inverse);
+  --color-on-inverse: var(--on-inverse); --color-on-inverse-muted: var(--on-inverse-muted);
+  --color-accent-soft: var(--accent-soft); --color-brand-surface: var(--brand-surface); --color-brand-surface-2: var(--brand-surface-2); --color-loss-surface: var(--loss-surface); --color-page: var(--bg);
 }
-html { color-scheme: light; }
