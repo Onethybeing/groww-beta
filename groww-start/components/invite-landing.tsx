@@ -1,4 +1,5 @@
 "use client";
+import { SavedData } from "@/components/saved-data";
 import Link from "next/link";
 import { useState } from "react";
 import { Snowflake } from "lucide-react";
@@ -7,7 +8,7 @@ import { useApp } from "@/lib/store";
 import { isValidCode, normaliseCode } from "@/lib/engine/referrals";
 
 /** Landing page for an invite link: accepting it gives the new user a bonus streak freeze. */
-export function InviteLanding({ code }: { code: string }) {
+function InviteLandingBody({ code }: { code: string }) {
   const acceptReferral = useApp((s) => s.acceptReferral);
   const referredBy = useApp((s) => s.referredBy);
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
@@ -42,4 +43,8 @@ export function InviteLanding({ code }: { code: string }) {
       <p className="mt-auto text-center text-[11px] text-muted-ink">Concept demo inspired by Groww · not affiliated · demo money only · rewards are never cash</p>
     </div>
   );
+}
+
+export function InviteLanding({ code }: { code: string }) {
+  return <SavedData><InviteLandingBody code={code} /></SavedData>;
 }

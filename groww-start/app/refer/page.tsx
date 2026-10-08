@@ -1,4 +1,5 @@
 "use client";
+import { SavedData } from "@/components/saved-data";
 import { useEffect, useRef, useState } from "react";
 import { Check, Copy, Gift, Share2, Snowflake, UserPlus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -6,7 +7,7 @@ import { myCodeOf, totalFreezesOf, useApp } from "@/lib/store";
 import { MAX_REFERRAL_FREEZES, referralFreezes } from "@/lib/engine/referrals";
 import { formatDate } from "@/lib/format";
 
-export default function ReferPage() {
+function ReferPageBody() {
   const code = useApp(myCodeOf);
   const referrals = useApp((s) => s.referrals);
   const joinedViaInvite = useApp((s) => s.referredBy !== null);
@@ -79,4 +80,8 @@ export default function ReferPage() {
       </div>
     </>
   );
+}
+
+export default function ReferPage() {
+  return <SavedData><ReferPageBody /></SavedData>;
 }

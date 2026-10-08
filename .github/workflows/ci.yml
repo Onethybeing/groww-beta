@@ -20,7 +20,7 @@ jobs:
       - run: npx eslint .
       - run: npx tsc --noEmit
       - run: npx vitest run
-      - run: npx next build
+      # The e2e job builds once (Playwright webServer) and tests that build
   e2e:
     needs: test
     runs-on: ubuntu-latest

@@ -23,4 +23,5 @@ export const GlossarySchema = z.record(z.string(), z.object({ term: z.string(), 
 
 export type Card = z.infer<typeof CardSchema>;
 export type Lesson = z.infer<typeof LessonSchema>;
+export type Glossary = z.infer<typeof GlossarySchema>;
 export type LessonIconName = (typeof LESSON_ICON_NAMES)[number];

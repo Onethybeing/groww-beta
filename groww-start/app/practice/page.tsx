@@ -1,4 +1,5 @@
 "use client";
+import { SavedData } from "@/components/saved-data";
 import Link from "next/link";
 import { useMemo } from "react";
 import { Check, ChevronRight, Clock, Sprout } from "lucide-react";
@@ -12,7 +13,7 @@ import { holdings } from "@/lib/engine/portfolio";
 import { LESSONS } from "@/lib/content";
 import { formatINR, formatPct } from "@/lib/format";
 
-export default function PracticePage() {
+function PracticePageBody() {
   const cash = useApp((s) => s.cash);
   const txns = useApp((s) => s.transactions);
   const lessons = useApp((s) => s.lessons);
@@ -95,4 +96,8 @@ export default function PracticePage() {
       </div>
     </>
   );
+}
+
+export default function PracticePage() {
+  return <SavedData><PracticePageBody /></SavedData>;
 }

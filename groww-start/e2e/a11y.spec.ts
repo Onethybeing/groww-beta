@@ -7,7 +7,12 @@ for (const theme of ["light", "dark"] as const) {
     test.setTimeout(180_000);
     await page.addInitScript((t) => {
       localStorage.setItem("grow-ui", JSON.stringify({ version: 1, state: { theme: t, lang: "en", anonId: "axe-anon-id" } }));
-      localStorage.setItem("groww-genz", JSON.stringify({ version: 3, state: { welcomeSeen: true } }));
+      localStorage.setItem("groww-genz", JSON.stringify({ version: 3, state: {
+        welcomeSeen: true,
+        // One SIP so /sips/axe-sip renders its manage screen rather than "not found"
+        sips: [{ id: "axe-sip", status: "active", category: "index", symbol: "MF120716", amount: 500, day: 5, startDate: "2026-09-05" }],
+        instalments: [{ sipId: "axe-sip", date: "2026-09-05", amount: 500 }],
+      } }));
     }, theme);
     const failures: string[] = [];
     for (const r of ROUTES) {

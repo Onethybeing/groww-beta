@@ -1,4 +1,5 @@
 "use client";
+import { SavedData } from "@/components/saved-data";
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "motion/react";
@@ -19,7 +20,7 @@ const PICKS = [
   { value: 500, note: "Build faster" },
 ];
 
-export function SipOrder({ instrument, initialMode = "sip" }: { instrument: Instrument; initialMode?: "sip" | "lumpsum" }) {
+function SipOrderBody({ instrument, initialMode = "sip" }: { instrument: Instrument; initialMode?: "sip" | "lumpsum" }) {
   const { answers, goal, hintsOn, sips, wallet, startSip, placeOrder } = useApp();
   const { data } = useHistory(instrument.symbol);
   const nav = data?.points.at(-1);
@@ -156,4 +157,8 @@ export function SipOrder({ instrument, initialMode = "sip" }: { instrument: Inst
       )}
     </div>
   );
+}
+
+export function SipOrder(props: { instrument: Instrument; initialMode?: "sip" | "lumpsum" }) {
+  return <SavedData><SipOrderBody {...props} /></SavedData>;
 }
