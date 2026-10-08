@@ -6,7 +6,7 @@ import {
   Ban, BarChart3, Check, ChevronLeft, CircleCheck, Coins, Copy, Hourglass, Layers, Repeat, Scale, Tag, Waves, X,
 } from "lucide-react";
 import { RichText } from "./rich-text";
-import { PriceChart } from "@/components/charts/price-chart";
+import { PriceChart } from "@/components/charts/lazy";
 import { useHistory } from "@/lib/market/client";
 import { useApp } from "@/lib/store";
 import { LESSONS, type Card, type Lesson, type LessonIconName } from "@/lib/content";

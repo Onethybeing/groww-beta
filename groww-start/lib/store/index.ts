@@ -241,6 +241,8 @@ export const useApp = create<AppState>()(
         return { ...initialData, userId: newUserId() } as AppState;
       },
       onRehydrateStorage: () => (state) => state?.persistIdentity(),
+      // Rehydrated by AppChrome after mount, so the server HTML and the first client render match
+      skipHydration: true,
     },
   ),
 );

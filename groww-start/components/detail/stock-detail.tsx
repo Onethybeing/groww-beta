@@ -7,7 +7,7 @@ import { heldQty } from "@/lib/engine/portfolio";
 import { Monogram } from "@/components/instrument-row";
 import { Explain } from "@/components/explain";
 import { BeginnerTip } from "@/components/beginner-tip";
-import { PriceChart } from "@/components/charts/price-chart";
+import { PriceChart } from "@/components/charts/lazy";
 import { useHistory } from "@/lib/market/client";
 import { addDays } from "@/lib/engine/dates";
 import { rangeOver, trailingReturn } from "@/lib/engine/returns";

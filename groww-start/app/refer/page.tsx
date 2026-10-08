@@ -42,7 +42,7 @@ export default function ReferPage() {
         <section className="flex flex-col items-center gap-2 rounded-[20px] bg-brand-surface px-5 py-6 text-center text-white">
           <Gift className="size-9" aria-hidden />
           <h2 className="text-xl font-bold">Invite a friend, both get a streak freeze</h2>
-          <p className="text-sm text-white/85">A freeze keeps your SIP streak alive if you skip a month. Rewards are never cash.</p>
+          <p className="text-sm text-white">A freeze keeps your SIP streak alive if you skip a month. Rewards are never cash.</p>
           <span data-testid="my-code" className="mt-2 rounded-xl bg-card px-4 py-2 font-mono text-2xl font-bold tracking-[0.12em] text-groww">{code}</span>
         </section>
 

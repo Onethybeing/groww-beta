@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { useApp, type WelcomeAnswers } from "@/lib/store";
+import { useHydrated } from "@/lib/store/use-hydrated";
 
 const QUESTIONS: { key: keyof WelcomeAnswers; label: string; options: [string, string][] }[] = [
   { key: "goal", label: "What are you investing for?", options: [["emergency", "Emergency fund"], ["trip", "Trip or gadget"], ["studies", "Higher studies"], ["wealth", "Long-term wealth"], ["learning", "Just learning"]] },
@@ -13,12 +14,13 @@ const QUESTIONS: { key: keyof WelcomeAnswers; label: string; options: [string, s
 /** Optional new-user prompt: 4 taps turn on beginner hints. Shown once. */
 export function WelcomeSheet() {
   const welcomeSeen = useApp((s) => s.welcomeSeen);
+  const hydrated = useHydrated();
   const setWelcome = useApp((s) => s.setWelcome);
   const [answers, setAnswers] = useState<Partial<WelcomeAnswers>>({});
   const complete = QUESTIONS.every((q) => answers[q.key]);
 
   return (
-    <Sheet open={!welcomeSeen} onOpenChange={(open) => { if (!open) setWelcome(null); }}>
+    <Sheet open={hydrated && !welcomeSeen} onOpenChange={(open) => { if (!open) setWelcome(null); }}>
       <SheetContent side="bottom" showCloseButton={false} data-testid="welcome-sheet" className="mx-auto max-h-[92dvh] max-w-[430px] gap-4 overflow-y-auto rounded-t-3xl px-[22px] pb-[26px] pt-5">
         <div className="flex flex-col gap-1">
           <span className="text-xs font-bold uppercase tracking-[0.08em] text-groww">Optional · 30 seconds</span>

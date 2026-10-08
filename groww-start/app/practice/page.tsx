@@ -66,7 +66,7 @@ export default function PracticePage() {
             <Sprout className="size-7 flex-none" aria-hidden />
             <span className="flex flex-1 flex-col gap-0.5">
               <b className="text-[15px]">Ready to go real?</b>
-              <span className="text-[13px] text-white/85">You&apos;ve practised. Start a SIP from just {formatINR(MIN_SIP)} a month in a {starter.short} fund.</span>
+              <span className="text-[13px] text-white">You&apos;ve practised. Start a SIP from just {formatINR(MIN_SIP)} a month in a {starter.short} fund.</span>
             </span>
             <ChevronRight className="size-5" aria-hidden />
           </Link>

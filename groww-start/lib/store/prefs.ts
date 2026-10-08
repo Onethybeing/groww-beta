@@ -50,6 +50,7 @@ export const usePrefs = create<Prefs>()(
       version: 1,
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => state?.persistId(),
+      skipHydration: true,
     },
   ),
 );
