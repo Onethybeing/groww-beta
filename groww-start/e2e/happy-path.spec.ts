@@ -106,3 +106,17 @@ test("dark mode applies before paint and has no hydration warning", async ({ pag
   await expect(page.locator("html")).not.toHaveClass(/dark/);
   expect(warnings).toEqual([]);
 });
+
+test("system preference + dark OS stays dark through hydration (no light flash)", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.addInitScript(() => localStorage.setItem("groww-genz", JSON.stringify({ version: 3, state: { welcomeSeen: true } })));
+  const seen: boolean[] = [];
+  await page.exposeFunction("recordDark", (d: boolean) => seen.push(d));
+  await page.addInitScript(() => {
+    new MutationObserver(() => (window as unknown as { recordDark: (d: boolean) => void }).recordDark(document.documentElement.classList.contains("dark")))
+      .observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  });
+  await page.goto("/", { waitUntil: "networkidle" });
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  expect(seen).not.toContain(false);
+});

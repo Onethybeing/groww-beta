@@ -25,7 +25,7 @@ function MilestoneChip({ k, highlight }: { k: MilestoneKey; highlight: boolean }
   const m = MILESTONES[k];
   return (
     <Link href={href} data-testid={`milestone-${k}`} data-achieved="true" aria-label={`${m.title}, share`}
-      className={`flex items-center gap-1.5 rounded-full px-2.5 py-[5px] text-xs font-semibold ${highlight ? "bg-streak text-white" : "border border-habit-line bg-card"}`}>
+      className={`flex items-center gap-1.5 rounded-full px-2.5 py-[5px] text-xs font-semibold ${highlight ? "bg-streak text-on-streak" : "border border-habit-line bg-card"}`}>
       <MilestoneIcon name={m.icon} className="size-3.5" />
       {m.title}
       {highlight && <Share className="size-3" aria-hidden />}
@@ -96,7 +96,7 @@ export default function HoldingsPage() {
           </div>
           {sips.length > 0 ? (
             <div className="flex items-center gap-3.5">
-              <span className="flex size-12 flex-none items-center justify-center rounded-[14px] bg-streak text-white"><Flame className="size-[26px]" aria-hidden /></span>
+              <span className="flex size-12 flex-none items-center justify-center rounded-[14px] bg-streak text-on-streak"><Flame className="size-[26px]" aria-hidden /></span>
               <div className="flex flex-1 flex-col">
                 <b className="text-xl"><span data-testid="streak-count">{streak.current}</span>-month SIP streak</b>
                 <span className="text-[13px] text-habit-ink">{nextSip ? `Next SIP on ${shortDate(nextSip)}` : sips.some((x) => x.status === "paused") ? "SIPs paused · resume anytime" : "No active SIP · start a new one anytime"}</span>

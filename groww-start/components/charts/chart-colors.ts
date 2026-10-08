@@ -1,8 +1,12 @@
 "use client";
 
-/** Hex colour plus alpha → rgba() (charts need concrete colours, not CSS variables). */
+/**
+ * Hex colour plus alpha → rgba() (charts need concrete colours, not CSS variables).
+ * Theme tokens used by charts must stay 3/6-digit hex; anything else is returned unchanged.
+ */
 export function withAlpha(hex: string, a: number): string {
   const h = hex.replace("#", "").trim();
+  if (!/^([0-9a-f]{3}|[0-9a-f]{6})$/i.test(h)) return hex;
   const n = Number.parseInt(h.length === 3 ? h.split("").map((c) => c + c).join("") : h, 16);
   return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
 }
